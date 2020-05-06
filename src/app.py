@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from src.routes import moving_router, actions_router
-from src.models import GameState
 
 
 app = FastAPI(
