@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Path
-from pydantic import BaseModel
 from src.models import GameState
 
 router = APIRouter()
