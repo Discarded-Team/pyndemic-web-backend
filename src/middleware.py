@@ -33,8 +33,3 @@ def _decode_jwt_token(jwt_token):
         return jwt.decode(jwt_token, SECRET_KEY, algorithms='HS256')
     except jwt.exceptions.InvalidSignatureError as exc:
         raise exc
-
-
-def create_session():
-    payload = {'player': uuid4()}
-    return jwt.encode(payload, SECRET_KEY, algorithm='HS256')
