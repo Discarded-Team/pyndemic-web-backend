@@ -1,10 +1,9 @@
 from fastapi import Request, status
 from fastapi.responses import Response, JSONResponse
-from uuid import uuid4
 import jwt
 
 
-SECRET_KEY = 'you will never guess'
+SECRET_KEY = 'you should never guess'
 
 
 async def sessionMiddleware(request: Request, call_next) -> Response:
