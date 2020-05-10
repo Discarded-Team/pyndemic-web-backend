@@ -14,7 +14,7 @@ async def sessionMiddleware(request: Request, call_next) -> Response:
         response.headers['WWW-Authentication': 'URI /auth']
         return response
     else:
-        request.state = get_player_uuid(session)
+        request.state.player = get_player_uuid(session)
         response = await call_next(request)
 
     return response

@@ -1,6 +1,15 @@
-from fastapi import APIRouter, Query
+
+from fastapi import APIRouter, Query, Request, Depends
+from fastapi.responses import JSONResponse, Response
 from src.models import GameState, CityCard
 from typing import List
+import logging
+
+logger = logging.getLogger(__name__)
+handler = logging.StreamHandler()
+handler.setFormatter(logging.Formatter('Method %{msg} have recieved by %{player}'))
+logger.addHandler(handler)
+
 
 router = APIRouter()
 
@@ -10,8 +19,10 @@ router = APIRouter()
     description='Discard a card of the city where you are now and place a building in this city',
     response_model=GameState
 )
-async def build():
-    return {'action': 'build', 'city': 'this_city'}
+async def build(request: Request) -> Response:
+    current_player = request.state.player
+    logger.info({'build', extra={'player': current_player})
+    return JSONResponse({'method': 'build', 'player': current_player}, 200)
 
 
 @router.post(
@@ -19,8 +30,13 @@ async def build():
     description='Discard a card of the city where you are now and remove one point of dosiase any colour',
     response_model=GameState
 )
-async def treat(colour: str = Query(..., title='Colour disiase for trat')):
-    return {'action': 'treat', 'city': 'this_city'}
+async def treat(
+    request: Request,
+    colour: str = Query(..., title='Colour disiase for trat')
+):
+    current_player = request.state.player
+    logger.info('treat', extra={'player': current_player})
+    return JSONResponse({'method': 'treat', 'player': current_player}, 200)
 
 
 @router.post(
@@ -29,7 +45,9 @@ async def treat(colour: str = Query(..., title='Colour disiase for trat')):
     response_model=GameState
 )
 async def cure(discarded_cards: List[CityCard]):
-    return {'action': 'treat', 'city': 'this_city'}
+    current_player = request.state.player
+    logger.info('cure', extra={'player': current_player})
+    return JSONResponse({'method': 'cure', 'player': current_player}, 200)
 
 
 @router.post(
@@ -37,15 +55,21 @@ async def cure(discarded_cards: List[CityCard]):
     response_model=GameState
 )
 async def share(
+    request: Request,
     card: str = Query(..., title='Card for share'),
     player: str = Query(..., title='Player name for sharing')
 ):
-    return {'action': 'pass', 'city': 'this_city'}
+    current_player = request.state.player
+    logger.info('share', extra={'player': current_player})
+    return JSONResponse({'method': 'share', 'player': current_player}, 200)
 
 
 @router.post(
     '/pass',
+    request: Request,
     response_model=GameState,
 )
 async def pass_action():
-    return {'action': 'pass', 'city': 'this_city'}
+    current_player = request.state.player
+    logger.info('pass', extra={'player': current_player})
+    return JSONResponse({'method': 'pass', 'player': current_player}, 200)
