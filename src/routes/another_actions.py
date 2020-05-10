@@ -2,7 +2,7 @@ from fastapi import APIRouter, Query
 from src.models import GameState, CityCard
 from typing import List
 
-router = APIRouter(dependency_overrides_provider=)
+router = APIRouter()
 
 
 @router.post(
