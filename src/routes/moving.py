@@ -20,5 +20,6 @@ async def move_action(
 ):
     current_player = request.state.player
     logger.info(f'Move to {city_name} with {move_action} action by {current_player}')
-    return JSONResponse({'method': 'move', 'player': current_player,
+    return JSONResponse({'method': 'move',
+                         'player': current_player,
                          'type': move_action}, status.HTTP_200_OK)

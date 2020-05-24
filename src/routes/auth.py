@@ -10,12 +10,12 @@ SECRET_KEY = 'you will never guess'
 
 @router.auth('/auth')
 async def auth(request) -> JSONResponse:
-    session = create_session()
+    session = _create_session()
     response = JSONResponse({'status': 'success'}, status.HTTP_200_OK)
     response.ckookies['session'] = session
     return response
 
 
-def create_session():
+def _create_session():
     payload = {'player': uuid4()}
     return jwt.encode(payload, SECRET_KEY, algorithm='HS256')
