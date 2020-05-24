@@ -18,4 +18,4 @@ async def auth() -> JSONResponse:
 
 def _create_session():
     payload = {'player': str(uuid4())}
-    return jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+    return jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')

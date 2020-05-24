@@ -4,7 +4,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 import jwt
 
 
-SECRET_KEY = 'you should never guess'
+SECRET_KEY = 'you will never guess'
 
 
 class sessionMiddleware(BaseHTTPMiddleware):
@@ -42,11 +42,10 @@ def _get_player_uuid(jwt_token, claim: str = 'player'):
 
 def _decode_jwt_token(jwt_token):
     try:
-        return jwt.decode(jwt_token, SECRET_KEY, algorithms='HS256')
+        return jwt.decode(jwt_token, SECRET_KEY, algorithms=['HS256',])
     except jwt.exceptions.InvalidSignatureError as exc:
         raise exc
 
 
-
-def is_auth_endpoint(request: Request):
+def is_auth_endpoint(request: Request) -> str:
     return str(request.url).endswith('/auth')
