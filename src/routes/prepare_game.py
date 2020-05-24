@@ -12,7 +12,7 @@ class Game:
     name: str = 'I am game'
 
 
-class GameConfig:
+class GameConfig(BaseModel):
     difficult: int = Field(..., gt=1, lt=4, description='Difficult of the game 1 to 4 there 1 is very easy and 4 is very hard')
     player_count: int = Field(..., gt=1, lt=6, description='Count playeer for new game')
 
@@ -35,7 +35,7 @@ async def create_new_game(
     game_config: GameConfig
 ):
     current_player = request.state.player
-    request.state.games.update({current_player: Game())
+    request.state.games.update({current_player: Game()})
     game_description = GameDescription(name=current_player,
                                        owner=current_player,
                                        difficult=game_config.difficult,

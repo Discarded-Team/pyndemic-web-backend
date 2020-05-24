@@ -4,6 +4,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+class Game:
+    name: str = 'I am game'
+
+
 class GameIsMissingError(Exception):
     pass
 

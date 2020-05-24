@@ -22,6 +22,5 @@ async def shutdown_server():
     logger.info('Server have shutdown')
 
 app.add_middleware(sessionMiddleware)
-
 app.include_router(moving_router, prefix='/moving', tags=['moving'])
 app.include_router(actions_router, prefix='/actions', tags=['actions'])

@@ -21,7 +21,7 @@ router = APIRouter()
 )
 async def build(request: Request) -> Response:
     current_player = request.state.player
-    logger.info({'build', extra={'player': current_player})
+    logger.info('build', extra={'player': current_player})
     return JSONResponse({'method': 'build', 'player': current_player}, 200)
 
 
@@ -44,7 +44,7 @@ async def treat(
     description='In a city with a medical station, discard 5 cards of the same color to cure the disease',
     response_model=GameState
 )
-async def cure(discarded_cards: List[CityCard]):
+async def cure(request: Request, discarded_cards: List[CityCard]):
     current_player = request.state.player
     logger.info('cure', extra={'player': current_player})
     return JSONResponse({'method': 'cure', 'player': current_player}, 200)
@@ -65,11 +65,10 @@ async def share(
 
 
 @router.post(
-    '/pass',
-    request: Request,
+    '/pass', 
     response_model=GameState,
 )
-async def pass_action():
+async def pass_action(request: Request,):
     current_player = request.state.player
     logger.info('pass', extra={'player': current_player})
     return JSONResponse({'method': 'pass', 'player': current_player}, 200)
