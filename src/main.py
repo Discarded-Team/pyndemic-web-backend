@@ -1,5 +1,5 @@
 from src.game_menagment import GamesDict
-from src.routes import moving_router, actions_router
+from src.routes import moving_router, actions_router, auth_router
 from src.middleware import sessionMiddleware
 
 from fastapi import FastAPI
@@ -24,3 +24,4 @@ async def shutdown_server():
 app.add_middleware(sessionMiddleware)
 app.include_router(moving_router, prefix='/moving', tags=['moving'])
 app.include_router(actions_router, prefix='/actions', tags=['actions'])
+app.include_router(auth_router, tags=['auth'])

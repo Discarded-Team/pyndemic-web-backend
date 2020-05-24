@@ -8,14 +8,14 @@ router = APIRouter()
 SECRET_KEY = 'you will never guess'
 
 
-@router.auth('/auth')
-async def auth(request) -> JSONResponse:
+@router.get('/auth')
+async def auth() -> JSONResponse:
     session = _create_session()
     response = JSONResponse({'status': 'success'}, status.HTTP_200_OK)
-    response.ckookies['session'] = session
+    response.set_cookie(key='session', value=session,)
     return response
 
 
 def _create_session():
-    payload = {'player': uuid4()}
+    payload = {'player': str(uuid4())}
     return jwt.encode(payload, SECRET_KEY, algorithm='HS256')
