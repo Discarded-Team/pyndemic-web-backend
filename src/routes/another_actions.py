@@ -1,5 +1,5 @@
 
-from fastapi import APIRouter, Query, Request, Depends
+from fastapi import APIRouter, Query, Request
 from fastapi.responses import JSONResponse, Response
 from src.models import GameState, CityCard
 from typing import List
@@ -22,7 +22,8 @@ router = APIRouter()
 async def build(request: Request) -> Response:
     current_player = request.state.player
     logger.info('build', extra={'player': current_player})
-    return JSONResponse({'method': 'build', 'player': current_player}, 200)
+    return JSONResponse({'method': 'build',
+                         'player': current_player}, 200)
 
 
 @router.post(
@@ -61,14 +62,16 @@ async def share(
 ):
     current_player = request.state.player
     logger.info('share', extra={'player': current_player})
-    return JSONResponse({'method': 'share', 'player': current_player}, 200)
+    return JSONResponse({'method': 'share',
+                         'player': current_player}, 200)
 
 
 @router.post(
-    '/pass', 
+    '/pass',
     response_model=GameState,
 )
 async def pass_action(request: Request,):
     current_player = request.state.player
     logger.info('pass', extra={'player': current_player})
-    return JSONResponse({'method': 'pass', 'player': current_player}, 200)
+    return JSONResponse({'method': 'pass',
+                         'player': current_player}, 200)

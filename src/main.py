@@ -1,9 +1,12 @@
-from src.game_menagment import GamesDict
-from src.routes import moving_router, actions_router, auth_router, prepare_game_router
+from src.game_managment import GamesDict
+from src.routes import (
+    moving_router,
+    actions_router,
+    auth_router,
+    prepare_game_router
+)
 from src.middleware import sessionMiddleware
-
 from fastapi import FastAPI
-
 import logging
 
 logger = logging.getLogger(__name__)

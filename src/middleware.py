@@ -42,7 +42,7 @@ def _get_player_uuid(jwt_token, claim: str = 'player'):
 
 def _decode_jwt_token(jwt_token):
     try:
-        return jwt.decode(jwt_token, SECRET_KEY, algorithms=['HS256',])
+        return jwt.decode(jwt_token, SECRET_KEY, algorithms=['HS256', ])
     except jwt.exceptions.InvalidSignatureError as exc:
         raise exc
 
