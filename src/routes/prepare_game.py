@@ -1,14 +1,10 @@
-from fastapi import APIRouter, Request, status, BackgroundTasks
+from fastapi import APIRouter, Request, BackgroundTasks
 from src.game_managment import GameSession
 from pydantic import Field, BaseModel
 from pyndemic.game import Game
-from pyndemic.character import Character
 from datetime import datetime
-import json
 import logging
-from typing import Dict, Any
-
-from pprint import pprint
+from typing import Dict
 
 logger = logging.getLogger(__name__)
 
