@@ -1,5 +1,5 @@
-activate venv
-Install requirements - `pip install -r requirements.txt`
+activate venv  
+Install requirements - `pip install -r requirements.txt`  
 Start web server - `uvicorn src.main:app --reload`  
 `--reload` argument for hot reload server
 
