@@ -1,5 +1,6 @@
 from pyndemic.game import Game
 from pyndemic.character import Character
+from pyndemic.formatter import BaseFormatter
 from collections import UserDict
 import logging
 
@@ -52,3 +53,9 @@ class GameSession:
         self.game.add_character(Character(name))
         self.players.update({current_user: name})
         logger.info(f'Playeer {current_user} with name {name} join to game with name {self.owner_user_id}')
+
+    def game_to_dict(self):
+        return BaseFormatter().game_to_dict(self.game)
+
+    def start_game(self):
+        self.game.start_game()

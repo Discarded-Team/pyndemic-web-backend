@@ -100,16 +100,13 @@ def find_game(current_player, games):
 
 @router.get(
     '/game_state/{game_name}',
-    description='Current game state',
-    response_model=GameDescription
+    description='Current game state'
 )
 async def state_game(
     request: Request,
     game_name: str,
-):
+) -> JSONResponse:
     gameSession = request.app.state.games.get(game_name)
-    game = gameSession.game
-
-    formatter = BaseFormatter()
-    response = formatter.game_to_dict(game)
-    return JSONResponse(response)
+    gameSession.add_player('Bob', 'dsdssdsdsd')
+    gameSession.start_game()
+    return JSONResponse(gameSession.game_to_dict())
