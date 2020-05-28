@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Request, BackgroundTasks
+from fastapi.responses import JSONResponse
 from src.game_managment import GameSession
 from pydantic import Field, BaseModel
 from pyndemic.game import Game
+from pyndemic.formatter import BaseFormatter
 from datetime import datetime
 import logging
 from typing import Dict
@@ -86,8 +88,7 @@ async def join_game(
                 'difficult': gameSession.difficult,
                 'players': gameSession.players,
                 'player_count': f'{len(gameSession.players.items())} of {gameSession.player_count}',
-                'created': gameSession.created
-    }
+                'created': gameSession.created}
     return response
 
 
@@ -95,3 +96,20 @@ def find_game(current_player, games):
     for gameSession in games.values():
         if current_player in gameSession.players.keys():
             return gameSession
+
+
+@router.get(
+    '/game_state/{game_name}',
+    description='Current game state',
+    response_model=GameDescription
+)
+async def state_game(
+    request: Request,
+    game_name: str,
+):
+    gameSession = request.app.state.games.get(game_name)
+    game = gameSession.game
+
+    formatter = BaseFormatter()
+    response = formatter.game_to_dict(game)
+    return JSONResponse(response)
