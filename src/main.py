@@ -27,9 +27,6 @@ async def start_server():
 async def shutdown_server():
     logger.info('Server have shutdown')
 
-
-app.mount("/static", StaticFiles(directory="src/static"), name="static")
-
 app.add_middleware(sessionMiddleware)
 app.include_router(moving_router, prefix='/moving', tags=['moving'])
 app.include_router(actions_router, prefix='/actions', tags=['actions'])
