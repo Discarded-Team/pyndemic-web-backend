@@ -2,3 +2,5 @@
 __pycache__
 setup.cfg
 .vscode
+.mypy_cache
+.idea
