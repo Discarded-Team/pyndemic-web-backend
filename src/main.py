@@ -7,6 +7,7 @@ from src.routes import (
 )
 from src.middleware import sessionMiddleware
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 import logging
 from fastapi.staticfiles import StaticFiles
 
@@ -25,6 +26,9 @@ async def start_server():
 @app.on_event("shutdown")
 async def shutdown_server():
     logger.info('Server have shutdown')
+
+
+app.mount("/static", StaticFiles(directory="src/static"), name="static")
 
 app.add_middleware(sessionMiddleware)
 app.include_router(moving_router, prefix='/moving', tags=['moving'])
