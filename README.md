@@ -2,7 +2,6 @@
 ## fastapi app
 * Activate/create venv 
 * Install requirements - `pip install -r requirements.txt`
-* Add `Pyndemic` engine to `PYTHONPATH`
 * Start web server - `uvicorn src.main:app --reload`  
 `--reload` argument for hot reload server
 * After need get session token in `/auth` endpoint  
@@ -11,4 +10,4 @@ documentation in `/docs` endpoint
 ## frontend app
 Frontend server is Vue.js app
 * App directory is `frontend`
-* After autharization by `/auth`, it's available by url `/static/game_view`
+* Available by url `/static/game_view`
