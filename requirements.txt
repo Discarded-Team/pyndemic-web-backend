@@ -10,3 +10,5 @@ uvloop==0.14.0
 websockets==8.1
 git+git://github.com/Discarded-Team/Pyndemic@feature/add_setup_py#egg=pyndemic
 aiofiles
+pylint
+mypy
