@@ -8,10 +8,12 @@ from src.routes import (
 from src.middleware import sessionMiddleware
 from fastapi import FastAPI
 import logging
+from fastapi.staticfiles import StaticFiles
 
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title='Pyndemic board game', debug=True)
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
 
 @app.on_event("startup")
