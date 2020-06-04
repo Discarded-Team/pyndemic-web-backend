@@ -6,6 +6,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sortablejs@1.8.4/Sortable.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.20.0/vuedraggable.umd.min.js"></script>
+    <link rel="stylesheet" href="pandemic_lists.css">
 </head>
 
 <body>
@@ -39,6 +40,7 @@
     let init_old_cards = [];
 
     Vue.use(vuedraggable);
+
     new Vue({
         template: `
     <div class="row">
@@ -145,15 +147,11 @@
     <div>Games cards {{ game_cards }} </div><br>
     <div>Old cards {{ old_cards }} </div><br>
 </div>
-
-
   </div>
   `,
         data() {
             return {
                 current_player: 'Doctor',
-
-
                 cards_doctor: init_cards_doctor,
                 cards_scientist: init_cards_scientist,
                 cards_researcher: init_cards_researcher,
@@ -187,104 +185,5 @@
         }
     }).$mount("#app");
 </script>
-
-<style>
-    .list-group {
-        padding: 20px;
-    }
-
-    .list-group-item {
-        position: relative;
-        display: block;
-        padding: .75rem 1.25rem;
-        margin-bottom: -1px;
-        background-color: #fff;
-        border: 1px solid rgba(0, 0, 0, .125);
-    }
-
-    .list-group-item {
-        cursor: move;
-    }
-
-    .list-group-item {
-        cursor: move;
-    }
-
-    .col-3 {
-        -ms-flex: 0 0 25%;
-        -webkit-box-flex: 0;
-        flex: 0 0 25%;
-        max-width: 25%;
-        margin: 10px;
-    }
-
-    .row {
-        display: -ms-flexbox;
-        display: -webkit-box;
-        display: flex;
-        -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
-        /*margin-right: -15px;*/
-        /*margin-left: -15px;*/
-    }
-
-    select {
-        display: block;
-        position: relative;
-        font-size: 20px;
-        height: 100px;
-        width: 150px;
-    }
-
-    #header_div {
-        position: relative;
-        display: block;
-        color: white;
-        background: #343436;
-        width: 150px;
-    }
-
-
-    .color_red {
-        color: white;
-        background: red;
-    }
-
-    .color_blue {
-        color: white;
-        background: blue;
-    }
-
-    .color_black {
-        color: white;
-        background: black;
-    }
-
-    .color_yellow {
-        color: black;
-        background: yellow;
-    }
-
-     .color_orange {
-        color: black;
-        background: orange;
-    }
-
-    .shuffle_btn {
-        border-radius: 10px;
-        height: 20px;
-        width: 70px;
-        background: linear-gradient(180deg, #1aad00, #009b28);
-        border: none;
-        color: white;
-        cursor: pointer;
-    }
-
-    body{
-        background: #fcf8f9;
-    }
-
-</style>
-
 </body>
 </html>

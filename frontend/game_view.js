@@ -79,17 +79,24 @@ function plotMap() {
             .openOn(mymap);
     }
 
+    const r0 = 45000;
+    const r1 = 90000;
+    const r2 = 130000;
+    const r3 = 170000;
+
+    let radius_dict = { 0: r0, 1: r1, 2: r2, 3: r3};
 
     function onCircleClick(e) {
         // let coord = e.latlng.toString().replace('LatLng', '');
         // let text = `${this.city_name}  ${this.population} ${coord}`;
         // let text = `${this.city_name}`;
+
         if (e.target.virus_level < 3) {
             let circle = L.circle([e.target.lat, e.target.lon], {
                 color: e.target.options.color,
                 fillColor: e.target.options.color,
                 fillOpacity: 0.8,
-                radius: e.target.options.radius * 1.5
+                radius: radius_dict[e.target.virus_level + 1]
             });
 
             circle.city_name = e.target.city_name;
@@ -107,11 +114,11 @@ function plotMap() {
                 color: e.target.options.color,
                 fillColor: e.target.options.color,
                 fillOpacity: 0.8,
-                radius: 100000
+                radius: r0
             });
             circle.city_name = e.target.city_name;
             circle.population = e.target.population;
-            circle.virus_level = 1;
+            circle.virus_level = 0;
             circle.lat = e.target.lat;
             circle.lon = e.target.lon;
             circle
@@ -147,14 +154,17 @@ function plotMap() {
             "hardwareAccelerated": true,
             "opacity": 0.2
         };
-        if (i % 6 === 0) {
-            // draw each 6 city as animation path
-            var line = L.polyline.antPath(polylines[i], ant_params
-            ).addTo(mymap);
-        } else {
-            // draw line
-            var line = L.polyline(polylines[i], {opacity: 0.3}).addTo(mymap);
-        }
+        // if (i % 6 === 0) {
+        //     // draw each 6 city as animation path
+        //     var line = L.polyline.antPath(polylines[i], ant_params
+        //     ).addTo(mymap);
+        // } else {
+        //     // draw line
+        //     var line = L.polyline(polylines[i], {opacity: 0.3}).addTo(mymap);
+        // }
+        //
+        // draw line
+        let line = L.polyline(polylines[i], {opacity: 0.3}).addTo(mymap);
 
         line.parent_name = names[polylines_ind[i][0]];
         line.child_name = names[polylines_ind[i][1]];
@@ -166,14 +176,14 @@ function plotMap() {
         let lat = lats[i];
         let lon = lons[i];
         // let r = population[i] * 20000;
-        let r = 100000; // size in km
+        // let r = 100000; // size in km
         let color = colors[i];
 
         let circle = L.circle([lat, lon], {
             color: color,
             fillColor: color,
             fillOpacity: 0.8,
-            radius: r
+            radius: r0
         }).addTo(mymap);
 
         circle.city_name = names[i];
@@ -228,9 +238,9 @@ function plotMap() {
 
 Vue.component("tab-home", {
     template: `
-<div id="home_div">
-
-    <div class="left_side">
+<div id="home_div" class="container">
+<div class="row">
+    <div class="col-sm left_side">
         <h2>Input persons</h2>
         <h3><span class="blue">Doctor&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span> {{ player1_name }}:&nbsp
         <input class="input_name"  v-model="player1_name"/></h3>
@@ -253,26 +263,24 @@ Vue.component("tab-home", {
               <option>2</option>
               <option>3</option>
               <option>4</option>
-        </select><br>
+        </select>
     </div>
-
-    <br>
-    <center>
-    <div id="first_menu">
-    <img class='card_img' src="img/Doctor.jpg"/>
-    &nbsp &nbsp
-    <img class='card_img' src="img/Researcher.jpg"/>
-    <br>
-    &nbsp &nbsp
-    <img class='card_img' src="img/Scientist.jpg"/>
-    &nbsp &nbsp
-    <img class='card_img' src="img/Caranteener.jpg"/>
-    <br>
-    <br>
-    <button id="start_btn" onclick="start_game()">start</button>
+    <div id="first_menu" class="col-sm">
+        <center>
+            <img class='card_img' src="img/Doctor.jpg"/>
+            &nbsp &nbsp
+            <img class='card_img' src="img/Researcher.jpg"/>
+            <br>
+            &nbsp &nbsp
+            <img class='card_img' src="img/Scientist.jpg"/>
+            &nbsp &nbsp
+            <img class='card_img' src="img/Caranteener.jpg"/>
+            <br>
+            <br>
+            <button id="start_btn" type="button" class="btn btn-success" onclick="start_game()">start</button>
+        </center>
     </div>
-     </center>
-
+ </div>
 </div>
     `,
     data: function () {
@@ -297,17 +305,6 @@ var init_players_cards = {
 var init_players_cards_color = convert2color(init_players_cards);
 
 
-function text2color(words) {
-    let data_color = {};
-
-    for (let i = 0; i < words.length; i++) {
-        let word = words[i];
-        let c = colors_rus[word];
-        data_color[word] = `color_${c}`;
-    }
-    return data_color;
-}
-
 function convert2color(data) {
     let data_color = {};
     for (const [key, value] of Object.entries(data)) {
@@ -316,9 +313,37 @@ function convert2color(data) {
     return data_color;
 }
 
+function shuffle(array) {
+    array.sort(() => Math.random() - 0.5);
+}
+
+function text2color(words) {
+    let new_words = [];
+    for (let i = 0; i < words.length; i++) {
+        let word = words[i];
+        let c = colors_rus[word];
+        new_words.push({name: word, cname: `color_${c}`})
+    }
+    return new_words;
+}
+
+let init_cards_doctor = text2color(['Атланта', 'Мадрид']);
+let init_cards_scientist = text2color(['Пекин', 'Москва']);
+let init_cards_researcher = text2color(['Лондон', 'Карачи']);
+let init_cards_caranteener = text2color(['Милан', 'Стамбул']);
+
+let init_players_words = ['Атланта', 'Мадрид', 'Пекин', 'Москва', 'Лондон', 'Карачи', 'Стамбул', 'Милан'];
+let init_game_cards = text2color(names_rus.filter(function (x) {
+    return !init_players_words.includes(x);
+}).concat(special_cards));
+let init_old_cards = [];
+
+
+Vue.use(vuedraggable);
+
 let tab_game = Vue.component("tab-game", {
     template: `<div>
-<div id="left_menu" class="left_side_small">
+<div id="left_menu" class="left_side_small bg_dark_color">
     <h3>Players</h3>
      <img class='card_img_static' v-bind:src="'img/' + current_player +'.jpg'"/>
      <br>
@@ -332,26 +357,111 @@ let tab_game = Vue.component("tab-game", {
 </div>
 <br>
 
-<div id='mapid'>
+<div id='mapid' class="container">
 </div>
 
-<div class="bottom">
+<div class="bottom" align="center">
         <div id="rope"></div>
+        <div>
         <h3><span class="selected_player">{{ current_player }}</span> cards 
-<!--        <span> {{ players_cards[current_player] }} </span>-->
+    <!--        <span> {{ players_cards[current_player] }} </span>-->
         </h3>
-        
-        <img class='card_img' src="images/trash/cities_cards.png"/>
-        &nbsp &nbsp
-        <img class='card_img' src="images/trash/cities_blue.png"/>
-        &nbsp &nbsp
-        <img class='card_img' src="images/trash/cities_yellow.png"/>
-        &nbsp &nbsp
-        <img class='card_img' src="images/trash/cities_red.png"/>
-        &nbsp &nbsp
-        <img class='card_img' src="images/trash/cities_black.png"/>
-    </center>
-    <br><br><br>
+
+           <div class="row">
+              <div class="col-sm">
+                <div class="col-3" v-if="current_player === 'Doctor'" >
+                      <h3>Doctor {{ cards_doctor.length }}</h3>
+                      <draggable class="list-group" :list="cards_doctor"  group="people" @change="log">
+                        <div
+                          v-for="(element, index) in cards_doctor"
+                          :key="element.name"
+                          v-bind:class="['list-group-item', element.cname]"
+                        >
+                          {{ element.name }}
+                        </div>
+                      </draggable>
+                    </div>
+                
+                <div class="col-3" v-if="current_player === 'Scientist'">
+                  <h3>Scientist {{ cards_scientist.length }} </h3>
+                  <draggable class="list-group" :list="cards_scientist"  group="people" @change="log">
+                    <div
+                      v-bind:class="['list-group-item', element.cname]"
+                      v-for="(element, index) in cards_scientist"
+                      :key="element.name"
+                    >
+                      {{ element.name }}
+                    </div>
+                  </draggable>
+                </div>
+                
+                 <div class="col-3" v-if="current_player === 'Researcher'">
+                  <h3>Researcher {{ cards_researcher.length }}</h3>
+                  <draggable class="list-group" :list="cards_researcher"  group="people" @change="log">
+                    <div
+                       v-bind:class="['list-group-item', element.cname]"
+                      v-for="(element, index) in cards_researcher"
+                      :key="element.name"
+                    >
+                      {{ element.name }}
+                    </div>
+                  </draggable>
+                </div>
+                
+                 <div class="col-3" v-if="current_player === 'Caranteener'">
+                  <h3>Caranteener {{ cards_caranteener.length }}</h3>
+                  <draggable class="list-group"  :list="cards_caranteener"  group="people" @change="log">
+                    <div
+                       v-bind:class="['list-group-item', element.cname]"
+                      v-for="(element, index) in cards_caranteener"
+                      :key="element.name"
+                    >
+                      {{ element.name }}
+                    </div>
+                  </draggable>
+                </div>
+                </div>
+                
+              <div class="col-sm">
+                <div class="col-3">
+                  <h5>Game cards {{ game_cards.length }}
+                  <button class="shuffle_btn btn btn-success" v-on:click="sort_game_cards">sort</button>
+                  <button class="shuffle_btn btn btn-success" v-on:click="shuffle_game_cards">shuffle</button>
+                  </h5>
+                  <draggable class="list-group" :list="game_cards" group="people" @change="log">
+                    <div
+                      v-bind:class="['list-group-item', element.cname]"
+                      v-for="(element, index) in game_cards"
+                      :key="element.name"
+                    >
+                      {{ element.name }}
+                    </div>
+                  </draggable>
+                </div>
+               
+                </div>
+               
+              <div class="col-sm">
+              <div class="col-3">
+                  <h4>Old cards {{ old_cards.length }}
+                  <button class="shuffle_btn btn btn-success" type="button" v-on:click="sort_old_cards">sort</button> 
+                  <button class="shuffle_btn btn btn-success" type="button" v-on:click="shuffle_old_cards">shuffle</button> 
+                  </h4>
+                  <draggable class="list-group" :list="old_cards"  group="people" @change="log">
+                    <div
+                      v-bind:class="['list-group-item', element.cname]"
+                      v-for="(element, index) in old_cards"
+                      :key="element.name"
+                    >
+                      {{ element.name }}
+                    </div>
+                  </draggable>
+                </div>
+              </div>      
+                
+          </div>
+                
+        </div>
 </div>
 </div>
     `,
@@ -363,10 +473,45 @@ let tab_game = Vue.component("tab-game", {
             current_player: 'Doctor',
             players_cards: init_players_cards,
             players_cards_color: init_players_cards_color,
-            game_cards: names_rus.join('\n'),
-            old_cards: [],
+
+            cards_doctor: init_cards_doctor,
+            cards_scientist: init_cards_scientist,
+            cards_researcher: init_cards_researcher,
+            cards_caranteener: init_cards_caranteener,
+
+            game_cards: init_game_cards,
+            old_cards: init_old_cards
         }
     },
+    methods: {
+        add: function () {
+            this.list.push({name: "Juan"});
+        },
+        replace: function () {
+            this.list = [{name: "Edgard"}];
+        },
+        clone: function (el) {
+            return {
+                name: el.name + " cloned"
+            };
+        },
+        log: function (evt) {
+            window.console.log(evt);
+        },
+        shuffle_game_cards: function () {
+            shuffle(this.game_cards);
+        },
+        shuffle_old_cards: function () {
+            shuffle(this.old_cards);
+        },
+        sort_game_cards: function () {
+            this.game_cards.sort();
+        },
+        sort_old_cards: function () {
+           this.old_cards.sort();
+        },
+    },
+      watch: {deep: true}
 });
 
 Vue.component("tab-stats", {
@@ -400,3 +545,7 @@ let game_vue = new Vue({
 });
 
 
+let win_h = $(window).height();
+let win_w = $(window).width();
+let element = document.createElement('mapid');
+element.style.width = "100px";
