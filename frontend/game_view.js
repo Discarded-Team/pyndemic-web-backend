@@ -49,6 +49,7 @@ function getIcon(title, color1, color2, color3, lat, lon) {
 }
 
 var mymap = null;
+var cities_cicles = [];
 
 function plotMap() {
     mymap = L.map('mapid',
@@ -94,7 +95,7 @@ function plotMap() {
                 fillOpacity: 0.8,
                 radius: radius_dict[e.target.virus_level + 1]
             });
-
+            circle.city_ind = e.target.city_ind;
             circle.city_name = e.target.city_name;
             circle.population = e.target.population;
 
@@ -112,6 +113,7 @@ function plotMap() {
             e.target.remove(mymap);
 
             game_vue.cities_virus_levels[e.target.city_name] = circle.virus_level;
+            cities_cicles[circle.city_ind] = circle;
         } else {
             let circle = L.circle([e.target.lat, e.target.lon], {
                 color: e.target.options.color,
@@ -119,6 +121,7 @@ function plotMap() {
                 fillOpacity: 0.8,
                 radius: r0
             });
+            circle.city_ind = e.target.city_ind;
             circle.city_name = e.target.city_name;
             circle.population = e.target.population;
 
@@ -134,6 +137,7 @@ function plotMap() {
             e.target.remove(mymap);
 
             game_vue.cities_virus_levels[e.target.city_name] = circle.virus_level;
+            cities_cicles[circle.city_ind] = circle;
         }
     }
 
@@ -148,30 +152,6 @@ function plotMap() {
 
 // draw connections
     for (let i = 0; i < polylines.length; i++) {
-        // let ant_params = {
-        //     "delay": 400,
-        //     "dashArray": [
-        //         34,
-        //         20
-        //     ],
-        //     "weight": 5,
-        //     "color": "rgba(0,0,33,0.44)",
-        //     "pulseColor": "#4eb907",
-        //     "paused": false,
-        //     "reverse": false,
-        //     "hardwareAccelerated": true,
-        //     "opacity": 0.2
-        // };
-        // if (i % 6 === 0) {
-        //     // draw each 6 city as animation path
-        //     var line = L.polyline.antPath(polylines[i], ant_params
-        //     ).addTo(mymap);
-        // } else {
-        //     // draw line
-        //     var line = L.polyline(polylines[i], {opacity: 0.3}).addTo(mymap);
-        // }
-        //
-        // draw line
         let line = L.polyline(polylines[i], {opacity: 0.3}).addTo(mymap);
 
         line.parent_name = names[polylines_ind[i][0]];
@@ -193,7 +173,7 @@ function plotMap() {
             fillOpacity: 0.8,
             radius: r0
         }).addTo(mymap);
-
+        circle.city_ind = i;
         circle.city_name = names[i];
         circle.population = population[i];
         circle.virus_level = 0;
@@ -202,6 +182,7 @@ function plotMap() {
         circle.on('mouseover', onCircleOver);
         circle.on('click', onCircleClick);
 
+        cities_cicles.push(circle);
         // let text = `${circle.city_name} ${circle.virus_level}`;
         // circle.bindTooltip(text, opacity=0.6).openTooltip();
         // popup
@@ -363,7 +344,13 @@ let tab_game = Vue.component("tab-game", {
         <option><span class="player_span">Researcher</span></option>
         <option><span class="player_span">Scientist</span></option>
         <option><span class="player_span">Caranteener</span></option>
-    </select><br>
+    </select><br><br>
+    <div class="input-group">
+        <input type="text" value="2" id="infect_input" class="form-control" v-model="infect_cities_count"/>
+        <div class="input-group-append">
+            <button type="button" class="btn btn-danger" v-on:click="infectCities">infect cities</button>
+        </div>
+    </div>
 </div>
 <br>
 <div  class="col-md-10">
@@ -492,7 +479,7 @@ let tab_game = Vue.component("tab-game", {
 
             game_cards: init_game_cards,
             old_cards: init_old_cards,
-            cities_virus_levels: init_cities_virus_levels,
+            infect_cities_count: 2,
         }
     },
     methods: {
@@ -538,13 +525,37 @@ let tab_game = Vue.component("tab-game", {
                 return 0;
             });
         },
+        infectCities: function () {
+            let n = this.infect_cities_count;
+            const selected_inds = inds
+                          .map(x => ({ x, r: Math.random() }))
+                          .sort((a, b) => a.r - b.r)
+                          .map(a => a.x)
+                          .slice(0, n);
+            console.log(selected_inds);
+
+            for (let i = 0; i < selected_inds.length; i++) {
+                let ind = selected_inds[i];
+                let latlngPoint = cities_cicles[ind].getLatLng();
+                let logmsg = `infect ${names[ind]}`;
+                console.log(logmsg);
+                cities_cicles[ind].fire('click');
+                // this.logtext2 += logmsg + '\n';
+            }
+        }
     },
+    props: ['logtext2'],
     watch: {deep: true}
 });
 
 Vue.component("tab-stats", {
-    template: "<div><img src='img/pyndemic_log_example.png' height='600px'></div></div>"
-});
+    template: `
+<div>
+    <textarea v-model="logtext2">
+    </textarea>    
+</div>`,
+    props: ["logtext2"]},
+);
 
 let game_vue = new Vue({
     el: "#dynamic-component-demo",
@@ -554,6 +565,29 @@ let game_vue = new Vue({
         virus_level: 1,
         epidemic_flashes: 0,
         // current_player: 'Scientist',
+        cities_virus_levels: init_cities_virus_levels,
+        logtext: `
+Game log: 
+infect Los Angeles 
+infect Lagos 
+infect Shanghai 
+infect Milan 
+infect Bangkok 
+infect Tehran 
+infect Bogota 
+infect Seoul 
+infect Istanbul 
+infect Miami 
+infect Johannesburg 
+infect Osaka 
+infect London 
+infect Jakarta 
+infect Madrid 
+infect St. Petersburg 
+infect Karachi 
+infect Tokyo 
+infect Sydney 
+infect Ho Chi Minh City`,
     },
     computed: {
         currentTabComponent: function () {
