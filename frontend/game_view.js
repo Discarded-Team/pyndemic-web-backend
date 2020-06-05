@@ -87,10 +87,6 @@ function plotMap() {
     let radius_dict = {0: r0, 1: r1, 2: r2, 3: r3};
 
     function onCircleClick(e) {
-        // let coord = e.latlng.toString().replace('LatLng', '');
-        // let text = `${this.city_name}  ${this.population} ${coord}`;
-        // let text = `${this.city_name}`;
-
         if (e.target.virus_level < 3) {
             let circle = L.circle([e.target.lat, e.target.lon], {
                 color: e.target.options.color,
@@ -101,14 +97,21 @@ function plotMap() {
 
             circle.city_name = e.target.city_name;
             circle.population = e.target.population;
+
+            // add virus_level
             circle.virus_level = e.target.virus_level + 1;
+
             circle.lat = e.target.lat;
             circle.lon = e.target.lon;
+
+
 
             circle.on('click', onCircleClick)
                 .on('mouseover', onCircleOver)
                 .addTo(mymap);
             e.target.remove(mymap);
+
+            game_vue.cities_virus_levels[e.target.city_name] = circle.virus_level;
         } else {
             let circle = L.circle([e.target.lat, e.target.lon], {
                 color: e.target.options.color,
@@ -118,7 +121,10 @@ function plotMap() {
             });
             circle.city_name = e.target.city_name;
             circle.population = e.target.population;
+
+            // drop virus_level
             circle.virus_level = 0;
+
             circle.lat = e.target.lat;
             circle.lon = e.target.lon;
             circle
@@ -126,6 +132,8 @@ function plotMap() {
                 .on('mouseover', onCircleOver)
                 .addTo(mymap);
             e.target.remove(mymap);
+
+            game_vue.cities_virus_levels[e.target.city_name] = circle.virus_level;
         }
     }
 
@@ -140,20 +148,20 @@ function plotMap() {
 
 // draw connections
     for (let i = 0; i < polylines.length; i++) {
-        let ant_params = {
-            "delay": 400,
-            "dashArray": [
-                34,
-                20
-            ],
-            "weight": 5,
-            "color": "rgba(0,0,33,0.44)",
-            "pulseColor": "#4eb907",
-            "paused": false,
-            "reverse": false,
-            "hardwareAccelerated": true,
-            "opacity": 0.2
-        };
+        // let ant_params = {
+        //     "delay": 400,
+        //     "dashArray": [
+        //         34,
+        //         20
+        //     ],
+        //     "weight": 5,
+        //     "color": "rgba(0,0,33,0.44)",
+        //     "pulseColor": "#4eb907",
+        //     "paused": false,
+        //     "reverse": false,
+        //     "hardwareAccelerated": true,
+        //     "opacity": 0.2
+        // };
         // if (i % 6 === 0) {
         //     // draw each 6 city as animation path
         //     var line = L.polyline.antPath(polylines[i], ant_params
@@ -240,24 +248,23 @@ Vue.component("tab-home", {
     template: `
 <div id="home_div" class="container">
 <div class="row">
-    <div class="col-sm left_side">
-        <h2>Input persons</h2>
-        <h3><span class="blue">Doctor&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span> {{ player1_name }}:&nbsp
-        <input class="input_name"  v-model="player1_name"/></h3>
+    <div class="col-md-4 left_side">
+        <h3>Input persons</h3>
+        <h4><span class="blue">Doctor&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span> {{ player1_name }}:&nbsp
+        <input v-model="player1_name" class="input_name form-control"/></h4>
         
-        <h3><span class="blue">Researcher&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span> {{ player2_name }}:&nbsp
-        <input class="input_name"  v-model="player2_name"/></h3>
+        <h4><span class="blue">Researcher&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span> {{ player2_name }}:&nbsp
+        <input v-model="player2_name" type="text" class="input_name form-control"/></h4>
         
-        <h3><span class="blue">Scientist&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span> {{ player3_name }}:&nbsp
-        <input class="input_name"  v-model="player3_name"/></h3>
+        <h4><span class="blue">Scientist&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span> {{ player3_name }}:&nbsp
+        <input v-model="player3_name" class="input_name form-control"/></h4>
         
-        <h3><span class="blue">Caranteener</span> {{ player4_name }}:&nbsp
-        <input class="input_name" v-model="player4_name"/></h3>
+        <h4><span class="blue">Caranteener</span> {{ player4_name }}:&nbsp
+        <input v-model="player4_name" class="input_name form-control"/></h4>
         
-        <h3><span class="red">Complexity&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span> {{ complexity }}:&nbsp</h3>
+        <h4><span class="red">Complexity&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span> {{ complexity }}:&nbsp</h4>
         
-
-        <select v-model="complexity">
+        <select v-model="complexity" class="custom-select">
               <option disabled value="">Options</option>
               <option>1</option>
               <option>2</option>
@@ -265,7 +272,7 @@ Vue.component("tab-home", {
               <option>4</option>
         </select>
     </div>
-    <div id="first_menu" class="col-sm">
+    <div id="first_menu" class="col-md-8">
         <center>
             <img class='card_img' src="img/Doctor.jpg"/>
             &nbsp &nbsp
@@ -338,6 +345,8 @@ let init_game_cards = text2color(names_rus.filter(function (x) {
 }).concat(special_cards));
 let init_old_cards = [];
 
+let init_cities_virus_levels = {};
+
 
 Vue.use(vuedraggable);
 
@@ -355,7 +364,6 @@ let tab_game = Vue.component("tab-game", {
         <option><span class="player_span">Scientist</span></option>
         <option><span class="player_span">Caranteener</span></option>
     </select><br>
-    <a href="pandemic_lists.html" class="pandemic_lists_link" target="_blank">pandemic lists</a>
 </div>
 <br>
 <div  class="col-md-10">
@@ -483,7 +491,8 @@ let tab_game = Vue.component("tab-game", {
             cards_caranteener: init_cards_caranteener,
 
             game_cards: init_game_cards,
-            old_cards: init_old_cards
+            old_cards: init_old_cards,
+            cities_virus_levels: init_cities_virus_levels,
         }
     },
     methods: {

@@ -75,8 +75,9 @@ ul {
 }
 
 .player_span {
-    color: var(--red-color);
+    color: var(--bright-color);
     font-size: 20px;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
 }
 
 .selected_player {
@@ -183,11 +184,10 @@ ul {
     width: 80px;
 }
 
-.left_select {
+.left_select{
     background: rgba(13, 14, 42, 0.97);
-    color: #282828;
     border: none;
-    width: 100%;
+    color: var(--bright-color);
 }
 
 
