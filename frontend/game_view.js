@@ -562,10 +562,3 @@ let game_vue = new Vue({
         deep: true
     }
 });
-
-
-let win_h = $(window).height();
-let win_w = $(window).width();
-let element = document.getElementById('mapid');
-element.style.width = `${win_w * 0.78}px`;
-element.style.height = `${win_h * 0.8}px`;
