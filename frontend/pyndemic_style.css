@@ -20,7 +20,7 @@ html, body {
 .bg_dark_color {
     background: var(--black-color);
 }
-h1 {
+h1, h2 {
     color: var(--super-red-color);
     /*font-family: 'Ubuntu', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;*/
     font-family: 'Comic Sans MS', sans-serif;

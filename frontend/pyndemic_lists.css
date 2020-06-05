@@ -33,17 +33,8 @@
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-    /*margin-right: -15px;*/
-    /*margin-left: -15px;*/
 }
 
-/*select {*/
-/*    display: block;*/
-/*    position: relative;*/
-/*    font-size: 20px;*/
-/*    height: 100px;*/
-/*    width: 150px;*/
-/*}*/
 
 #header_div {
     position: relative;

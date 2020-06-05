@@ -543,7 +543,7 @@ let tab_game = Vue.component("tab-game", {
 });
 
 Vue.component("tab-stats", {
-    template: "<div><img src='img/pandemic_log_example.png' height='600px'></div></div>"
+    template: "<div><img src='img/pyndemic_log_example.png' height='600px'></div></div>"
 });
 
 let game_vue = new Vue({
