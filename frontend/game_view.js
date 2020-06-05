@@ -82,9 +82,9 @@ function plotMap() {
     const r0 = 45000;
     const r1 = 90000;
     const r2 = 130000;
-    const r3 = 170000;
+    const r3 = 180000;
 
-    let radius_dict = { 0: r0, 1: r1, 2: r2, 3: r3};
+    let radius_dict = {0: r0, 1: r1, 2: r2, 3: r3};
 
     function onCircleClick(e) {
         // let coord = e.latlng.toString().replace('LatLng', '');
@@ -343,7 +343,9 @@ Vue.use(vuedraggable);
 
 let tab_game = Vue.component("tab-game", {
     template: `<div>
-<div id="left_menu" class="left_side_small bg_dark_color">
+
+<div class="row">
+<div id="left_menu" class="left_side_small bg_dark_color col-md-2">
     <h3>Players</h3>
      <img class='card_img_static' v-bind:src="'img/' + current_player +'.jpg'"/>
      <br>
@@ -356,10 +358,11 @@ let tab_game = Vue.component("tab-game", {
     <a href="pandemic_lists.html" class="pandemic_lists_link" target="_blank">pandemic lists</a>
 </div>
 <br>
-
-<div id='mapid' class="container">
+<div  class="col-md-10">
+    <div id='mapid'>
+    </div>
 </div>
-
+</div>
 <div class="bottom" align="center">
         <div id="rope"></div>
         <div>
@@ -505,13 +508,29 @@ let tab_game = Vue.component("tab-game", {
             shuffle(this.old_cards);
         },
         sort_game_cards: function () {
-            this.game_cards.sort();
+            this.game_cards.sort(function (a, b) {
+                if (a.name > b.name) {
+                    return 1;
+                }
+                if (a.name < b.name) {
+                    return -1;
+                }
+                return 0;
+            });
         },
         sort_old_cards: function () {
-           this.old_cards.sort();
+            this.old_cards.sort(function (a, b) {
+                if (a.name > b.name) {
+                    return 1;
+                }
+                if (a.name < b.name) {
+                    return -1;
+                }
+                return 0;
+            });
         },
     },
-      watch: {deep: true}
+    watch: {deep: true}
 });
 
 Vue.component("tab-stats", {
@@ -523,7 +542,7 @@ let game_vue = new Vue({
     data: {
         currentTab: "Game",
         tabs: ["Home", "Game", "Stats"],
-        virus_level: 2,
+        virus_level: 1,
         epidemic_flashes: 0,
         // current_player: 'Scientist',
     },
@@ -547,5 +566,6 @@ let game_vue = new Vue({
 
 let win_h = $(window).height();
 let win_w = $(window).width();
-let element = document.createElement('mapid');
-element.style.width = "100px";
+let element = document.getElementById('mapid');
+element.style.width = `${win_w * 0.78}px`;
+element.style.height = `${win_h * 0.8}px`;
