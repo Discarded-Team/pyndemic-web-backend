@@ -5,11 +5,11 @@
     <title>Pyndemic Online</title>
     <link rel="stylesheet" href="pyndemic_style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
-   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-   crossorigin=""/>
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
-   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
-   crossorigin=""></script>
+            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+            crossorigin=""></script>
     <script src="https://unpkg.com/leaflet-ant-path" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sortablejs@1.8.4/Sortable.min.js"></script>
@@ -37,76 +37,90 @@
     <h2>&nbspPyndemic Online</h2>
 </header>
 
+<div id="vaccines">
+    <img class='virus_img' src='img/virus_danger.png'/>
+    <input type="checkbox" id="vaccine_blue" value="false" v-model="vaccine_blue">
+    <label for="vaccine_blue"><span class="color_blue">blue</span></label>
+    &nbsp
+    <input type="checkbox" id="vaccine_yellow" value="false" v-model="vaccine_yellow">
+    <label for="vaccine_yellow"><span class="color_yellow">yellow</span></label>
+    &nbsp
+    <input type="checkbox" id="vaccine_black" value="false" v-model="vaccine_black">
+    <label for="vaccine_black"><span class="color_black">black</span></label>
+    &nbsp
+    <input type="checkbox" id="vaccine_red" value="false" v-model="vaccine_red">
+    <label for="vaccine_red"><span class="color_red">red</span></label>
+</div>
 
 <div id="dynamic-component-demo">
-      <div id="virus_level">
-          virus level
-          <input type="radio" id="v1" value="1" v-model="virus_level">
-          <label for="v1">2</label>
+    <div id="virus_level">
+        virus level
+        <input type="radio" id="v1" value="1" v-model="virus_level">
+        <label for="v1">2</label>
 
-          <input type="radio" id="v2" value="2" v-model="virus_level">
-          <label for="v2">2</label>
+        <input type="radio" id="v2" value="2" v-model="virus_level">
+        <label for="v2">2</label>
 
-          <input type="radio" id="v3" value="3" v-model="virus_level">
-          <label for="v3">3</label>
+        <input type="radio" id="v3" value="3" v-model="virus_level">
+        <label for="v3">3</label>
 
-          <input type="radio" id="v4" value="4" v-model="virus_level">
-          <label for="v4">3</label>
+        <input type="radio" id="v4" value="4" v-model="virus_level">
+        <label for="v4">3</label>
 
-            <input type="radio" id="v5" value="5" v-model="virus_level">
-            <label for="v5">3</label>
+        <input type="radio" id="v5" value="5" v-model="virus_level">
+        <label for="v5">3</label>
 
-            <input type="radio" id="v6" value="6" v-model="virus_level">
-            <label for="v6">4</label>
+        <input type="radio" id="v6" value="6" v-model="virus_level">
+        <label for="v6">4</label>
 
-            <input type="radio" id="v7" value="7" v-model="virus_level">
-            <label for="v7">4</label>
+        <input type="radio" id="v7" value="7" v-model="virus_level">
+        <label for="v7">4</label>
 
-          <div hidden="true">{{ virus_level }}</div>
-      </div>
+        <div hidden="true">{{ virus_level }}</div>
+    </div>
 
     <div id="epidemic_flashes">
-          epidemic flashes
-          <input type="radio" id="f0" value="0" v-model="epidemic_flashes">
-          <label for="f0">0</label>
+        epidemic flashes
+        <input type="radio" id="f0" value="0" v-model="epidemic_flashes">
+        <label for="f0">0</label>
 
-          <input type="radio" id="f1" value="1" v-model="epidemic_flashes">
-          <label for="f1">1</label>
+        <input type="radio" id="f1" value="1" v-model="epidemic_flashes">
+        <label for="f1">1</label>
 
-          <input type="radio" id="f2" value="2" v-model="epidemic_flashes">
-          <label for="f2">2</label>
+        <input type="radio" id="f2" value="2" v-model="epidemic_flashes">
+        <label for="f2">2</label>
 
-          <input type="radio" id="f3" value="3" v-model="epidemic_flashes">
-          <label for="f3">3</label>
+        <input type="radio" id="f3" value="3" v-model="epidemic_flashes">
+        <label for="f3">3</label>
 
-            <input type="radio" id="f4" value="4" v-model="epidemic_flashes">
-            <label for="f4">4</label>
+        <input type="radio" id="f4" value="4" v-model="epidemic_flashes">
+        <label for="f4">4</label>
 
-            <input type="radio" id="f5" value="5" v-model="epidemic_flashes">
-            <label for="f5">5</label>
+        <input type="radio" id="f5" value="5" v-model="epidemic_flashes">
+        <label for="f5">5</label>
 
-            <input type="radio" id="f6" value="6" v-model="epidemic_flashes">
-            <label for="f6">6</label>
+        <input type="radio" id="f6" value="6" v-model="epidemic_flashes">
+        <label for="f6">6</label>
 
-            <input type="radio" id="f7" value="7" v-model="epidemic_flashes">
-            <label for="f7">7</label>
+        <input type="radio" id="f7" value="7" v-model="epidemic_flashes">
+        <label for="f7">7</label>
 
-            <input type="radio" id="f8" value="8" v-model="epidemic_flashes">
-            <label for="f8">8</label>
+        <input type="radio" id="f8" value="8" v-model="epidemic_flashes">
+        <label for="f8">8</label>
 
-          <div hidden="true">{{ epidemic_flashes }}</div>
-      </div>
+        <div hidden="true">{{ epidemic_flashes }}</div>
+    </div>
 
-      <button
-        v-for="tab in tabs"
-        v-bind:key="tab"
-        v-bind:class="['tab-button', 'bg_dark_color', { active: currentTab === tab }]"
-        v-on:click="currentTab = tab"
-      >
+    <button
+            v-for="tab in tabs"
+            v-bind:key="tab"
+            v-bind:class="['tab-button', 'bg_dark_color', { active: currentTab === tab }]"
+            v-on:click="currentTab = tab"
+    >
         {{ tab }}
-      </button>
+    </button>
     <keep-alive>
-      <component v-bind:is="currentTabComponent" class="tab" :logtext2="logtext"></component>
+        <component v-bind:is="currentTabComponent" class="tab" :logtext2="logtext"></component>
     </keep-alive>
 </div>
 

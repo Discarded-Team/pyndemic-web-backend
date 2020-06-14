@@ -180,6 +180,7 @@ ul {
 }
 
 
+
 .input_name {
     width: 80px;
 }
@@ -280,4 +281,17 @@ p {
 
 #infect_input{
     max-width: 60px;
+}
+
+#vaccines{
+    position: fixed;
+    display: block;
+    top: 25px;
+    left: 29%;
+    border-bottom: 2px solid yellow;
+}
+
+.virus_img{
+    width: 25px;
+    height: 25px;
 }

@@ -480,6 +480,10 @@ let tab_game = Vue.component("tab-game", {
             game_cards: init_game_cards,
             old_cards: init_old_cards,
             infect_cities_count: 2,
+            vaccine_red: false,
+            vaccine_yellow: false,
+            vaccine_blue: false,
+            vaccine_black: false
         }
     },
     methods: {
