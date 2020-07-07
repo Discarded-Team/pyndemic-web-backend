@@ -106,7 +106,6 @@ function plotMap() {
             circle.lon = e.target.lon;
 
 
-
             circle.on('click', onCircleClick)
                 .on('mouseover', onCircleOver)
                 .addTo(mymap);
@@ -334,41 +333,41 @@ Vue.use(vuedraggable);
 let tab_game = Vue.component("tab-game", {
     template: `<div>
 
-<div class="row">
-<div id="left_menu" class="left_side_small bg_dark_color col-md-2">
-    <h3>Players</h3>
-     <img class='card_img_static' v-bind:src="'img/' + current_player +'.jpg'"/>
-     <br>
-    <select v-model="current_player" size="4" class="left_select">
-        <option><span class="player_span">Doctor</span></option>
-        <option><span class="player_span">Researcher</span></option>
-        <option><span class="player_span">Scientist</span></option>
-        <option><span class="player_span">Caranteener</span></option>
-    </select><br><br>
-    <div class="input-group">
-        <input type="text" value="2" id="infect_input" class="form-control" v-model="infect_cities_count"/>
-        <div class="input-group-append">
-            <button type="button" class="btn btn-danger" v-on:click="infectCities">infect cities</button>
+<div class="row h-75">
+    <div id="left_menu" class="left_side_small bg_dark_color col-md-2">
+        <h3>Players</h3>
+         <img class='card_img_static' v-bind:src="'img/' + current_player +'.jpg'"/>
+         <br>
+        <select v-model="current_player" size="4" class="left_select">
+            <option><span class="player_span">Doctor</span></option>
+            <option><span class="player_span">Researcher</span></option>
+            <option><span class="player_span">Scientist</span></option>
+            <option><span class="player_span">Caranteener</span></option>
+        </select><br><br>
+        <div class="input-group">
+            <input type="text" value="2" id="infect_input" class="form-control" v-model="infect_cities_count"/>
+            <div class="input-group-append">
+                <button type="button" class="btn btn-danger" v-on:click="infectCities">infect cities</button>
+            </div>
         </div>
     </div>
-</div>
 <br>
-<div  class="col-md-10">
-    <div id='mapid'>
+    <div  class="col-md-10 h-75">
+        <div id='mapid'>
+        </div>
     </div>
-</div>
 </div>
 <div class="bottom" align="center">
         <div id="rope"></div>
         <div>
-        <h3><span class="selected_player">{{ current_player }}</span> cards 
-    <!--        <span> {{ players_cards[current_player] }} </span>-->
-        </h3>
-
            <div class="row">
               <div class="col-sm">
                 <div class="col-3" v-if="current_player === 'Doctor'" >
-                      <h3>Doctor {{ cards_doctor.length }}</h3>
+                      <h3>
+                          <span class="selected_player">{{ current_player }} </span>
+                          &nbsp
+                          <span class="red">{{ cards_doctor.length }} </span> cards
+                      </h3>
                       <draggable class="list-group" :list="cards_doctor"  group="people" @change="log">
                         <div
                           v-for="(element, index) in cards_doctor"
@@ -381,7 +380,11 @@ let tab_game = Vue.component("tab-game", {
                     </div>
                 
                 <div class="col-3" v-if="current_player === 'Scientist'">
-                  <h3>Scientist {{ cards_scientist.length }} </h3>
+                      <h3>
+                          <span class="selected_player">{{ current_player }} </span>
+                          &nbsp
+                          <span class="red">{{ cards_scientist.length }} </span> cards
+                      </h3>
                   <draggable class="list-group" :list="cards_scientist"  group="people" @change="log">
                     <div
                       v-bind:class="['list-group-item', element.cname]"
@@ -394,7 +397,11 @@ let tab_game = Vue.component("tab-game", {
                 </div>
                 
                  <div class="col-3" v-if="current_player === 'Researcher'">
-                  <h3>Researcher {{ cards_researcher.length }}</h3>
+                     <h3>
+                          <span class="selected_player">{{ current_player }} </span>
+                          &nbsp
+                          <span class="red"> {{ cards_researcher.length }} </span> cards
+                      </h3>
                   <draggable class="list-group" :list="cards_researcher"  group="people" @change="log">
                     <div
                        v-bind:class="['list-group-item', element.cname]"
@@ -407,7 +414,11 @@ let tab_game = Vue.component("tab-game", {
                 </div>
                 
                  <div class="col-3" v-if="current_player === 'Caranteener'">
-                  <h3>Caranteener {{ cards_caranteener.length }}</h3>
+                      <h3>
+                          <span class="selected_player">{{ current_player }} </span>
+                          &nbsp
+                          <span class="red"> {{ cards_caranteener.length }} </span> cards
+                      </h3>
                   <draggable class="list-group"  :list="cards_caranteener"  group="people" @change="log">
                     <div
                        v-bind:class="['list-group-item', element.cname]"
@@ -532,10 +543,10 @@ let tab_game = Vue.component("tab-game", {
         infectCities: function () {
             let n = this.infect_cities_count;
             const selected_inds = inds
-                          .map(x => ({ x, r: Math.random() }))
-                          .sort((a, b) => a.r - b.r)
-                          .map(a => a.x)
-                          .slice(0, n);
+                .map(x => ({x, r: Math.random()}))
+                .sort((a, b) => a.r - b.r)
+                .map(a => a.x)
+                .slice(0, n);
             console.log(selected_inds);
 
             for (let i = 0; i < selected_inds.length; i++) {
@@ -546,6 +557,9 @@ let tab_game = Vue.component("tab-game", {
                 cities_cicles[ind].fire('click');
                 // this.logtext2 += logmsg + '\n';
             }
+        },
+        get_state: function () {
+            return JSON.parse();
         }
     },
     props: ['logtext2'],
@@ -553,12 +567,13 @@ let tab_game = Vue.component("tab-game", {
 });
 
 Vue.component("tab-stats", {
-    template: `
+        template: `
 <div>
     <textarea v-model="logtext2">
     </textarea>    
 </div>`,
-    props: ["logtext2"]},
+        props: ["logtext2"]
+    },
 );
 
 let game_vue = new Vue({
@@ -609,3 +624,35 @@ infect Ho Chi Minh City`,
         deep: true
     }
 });
+
+function getFromServer(query, params_dict) {
+    // let response = await fetch(query);
+    // return await response.text();
+    let xhttp = new XMLHttpRequest();
+    let params = '';
+    for (let k in params_dict) {
+        params += k + '=' + encodeURIComponent(params_dict[k]) + '&';
+    }
+    // let params = 'name=' + encodeURIComponent(name) + '&surname=' + encodeURIComponent(surname);
+    xhttp.open("GET", query + '?' + params, false);
+    xhttp.send();
+    return xhttp.responseText;
+}
+
+function create_new_game() {
+    let res = getFromServer("/create_new_game", {
+            "name": "string",
+            "owner": "string",
+            "difficult": 0,
+            "players": {
+                "additionalProp1": "string",
+                "additionalProp2": "string",
+                "additionalProp3": "string"
+            },
+            "player_count": "string",
+            "created": "string"
+        }
+    );
+    console.log(res);
+}
+create_new_game();

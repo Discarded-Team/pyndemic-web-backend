@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title='Pyndemic board game', debug=True)
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
+app.mount("/static2", StaticFiles(directory="frontend2"), name="static")
 
 
 @app.on_event("startup")
@@ -27,7 +28,7 @@ async def start_server():
 async def shutdown_server():
     logger.info('Server have shutdown')
 
-app.add_middleware(sessionMiddleware)
+# app.add_middleware(sessionMiddleware)
 app.include_router(moving_router, prefix='/moving', tags=['moving'])
 app.include_router(actions_router, prefix='/actions', tags=['actions'])
 app.include_router(auth_router, tags=['auth'])

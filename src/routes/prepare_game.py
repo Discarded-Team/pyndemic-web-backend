@@ -16,22 +16,24 @@ router = APIRouter()
 
 class GameConfig(BaseModel):
     owner_name: str
-    difficult: int = Field(..., ge=1, le=4,
-                           description='Difficult of the game 1 to 4 there 1 is very easy and 4 is very hard')
-    player_count: int = Field(..., ge=1, le=6,
-                              description='Count playeer for new game')
+    # difficult: int = Field(..., ge=1, le=4,
+    #                        description='Difficult of the game 1 to 4 there 1 is very easy and 4 is very hard')
+    # player_count: int = Field(..., ge=1, le=6,
+    #                           description='Count playeer for new game')
+    difficult: str
+    player_count: str
 
 
 class GameDescription(BaseModel):
     name: str
-    owner: str
+    owner_name: str
     difficult: int
     players: Dict[str, str]
-    player_count: str
+    player_count: int
     created: str
 
 
-@router.post(
+@router.get(
     '/create_new_game',
     description='Create instance of the Game',
     response_model=GameDescription
@@ -59,7 +61,6 @@ async def create_new_game(
                 'players': gameSession.players,
                 'player_count': f'1 of {gameSession.player_count}',
                 'created': gameSession.created}
-
     return response
 
 
