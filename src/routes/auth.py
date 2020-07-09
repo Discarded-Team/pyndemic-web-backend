@@ -1,8 +1,11 @@
+from uuid import uuid4
+
 from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
-from uuid import uuid4
 import jwt
 
+
+# TODO: totally redesign this module
 router = APIRouter()
 
 SECRET_KEY = 'you will never guess'
