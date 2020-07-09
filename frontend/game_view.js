@@ -1,12 +1,14 @@
 let popup = L.popup();
 
-Math.radians = function(degrees) {
-  return degrees * Math.PI / 180;
+Math.radians = function (degrees) {
+    return degrees * Math.PI / 180;
 };
 
-Math.degrees = function(radians) {
-  return radians * 180 / Math.PI;
+Math.degrees = function (radians) {
+    return radians * 180 / Math.PI;
 };
+
+var is_epidemy_step = false;
 
 function distance(lat1, lon1, lat2, lon2) {
     let R = 6371000;
@@ -148,55 +150,39 @@ function plotMap() {
     let radius_dict = {0: r0, 1: r1, 2: r2, 3: r3};
 
     function onCircleClick(e) {
-        if (e.target.virus_level < 3) {
+        var sign = is_epidemy_step ? 1 : -1;
+        if  (!is_epidemy_step && e.target.virus_level < 1 || is_epidemy_step && e.target.virus_level === 3){
+            return
+        }
+        if (e.target.virus_level <= 3) {
+            let new_city_level = e.target.virus_level + sign;
             let circle = L.circle([e.target.lat, e.target.lon], {
                 color: e.target.options.color,
                 fillColor: e.target.options.color,
                 fillOpacity: 0.8,
-                radius: radius_dict[e.target.virus_level + 1]
+                radius: radius_dict[new_city_level]
             });
             circle.city_ind = e.target.city_ind;
             circle.city_name = e.target.city_name;
             circle.population = e.target.population;
 
             // add virus_level
-            circle.virus_level = e.target.virus_level + 1;
+            circle.virus_level = new_city_level;
 
             circle.lat = e.target.lat;
             circle.lon = e.target.lon;
-
 
             circle.on('click', onCircleClick)
                 .on('mouseover', onCircleOver)
                 .addTo(mymap);
             e.target.remove(mymap);
 
-            game_vue.cities_virus_levels[e.target.city_name] = circle.virus_level;
+            // game_vue.cities_virus_levels[e.target.city_name] = circle.virus_level;
             cities_cicles[circle.city_ind] = circle;
-        } else {
-            let circle = L.circle([e.target.lat, e.target.lon], {
-                color: e.target.options.color,
-                fillColor: e.target.options.color,
-                fillOpacity: 0.8,
-                radius: r0
-            });
-            circle.city_ind = e.target.city_ind;
-            circle.city_name = e.target.city_name;
-            circle.population = e.target.population;
 
-            // drop virus_level
-            circle.virus_level = 0;
-
-            circle.lat = e.target.lat;
-            circle.lon = e.target.lon;
-            circle
-                .on('click', onCircleClick)
-                .on('mouseover', onCircleOver)
-                .addTo(mymap);
-            e.target.remove(mymap);
-
-            game_vue.cities_virus_levels[e.target.city_name] = circle.virus_level;
-            cities_cicles[circle.city_ind] = circle;
+            if (!is_epidemy_step){
+                // send_cmd player
+            }
         }
     }
 
@@ -740,6 +726,7 @@ let tab_game = Vue.component("tab-game", {
             });
         },
         infectCities: function () {
+            is_epidemy_step = true;
             let n = this.infect_cities_count;
             const selected_inds = inds
                 .map(x => ({x, r: Math.random()}))
@@ -756,6 +743,7 @@ let tab_game = Vue.component("tab-game", {
                 cities_cicles[ind].fire('click');
                 // this.logtext2 += logmsg + '\n';
             }
+            is_epidemy_step = false;
         },
         get_state: function () {
             return JSON.parse();
