@@ -75,3 +75,11 @@ async def pass_action(request: Request,):
     logger.info('pass', extra={'player': current_player})
     return JSONResponse({'method': 'pass',
                          'player': current_player}, 200)
+
+
+@router.get(
+    '/api/v1',
+)
+async def send_cmd(request: Request,):
+    logger.info('got request', request)
+    return JSONResponse({"got request": "OK"}, 200)

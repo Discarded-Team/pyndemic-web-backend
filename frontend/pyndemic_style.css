@@ -11,6 +11,7 @@
     --black-color: #2B2B2B;
     --bright-color: #00f9ff;
     --dark-menu: #141414;
+    --params-bg: rgba(0,0,0,0.5);
 }
 
 html, body {
@@ -20,7 +21,7 @@ html, body {
 .bg_dark_color {
     background: var(--black-color);
 }
-h1 {
+h1, h2 {
     color: var(--super-red-color);
     /*font-family: 'Ubuntu', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;*/
     font-family: 'Comic Sans MS', sans-serif;
@@ -75,8 +76,9 @@ ul {
 }
 
 .player_span {
-    color: var(--red-color);
+    color: var(--bright-color);
     font-size: 20px;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
 }
 
 .selected_player {
@@ -89,8 +91,8 @@ ul {
 #mapid {
     /*width: 100%;*/
 
-    height: 450px;
-    /*height: 500px;*/
+    /*height: 450px;*/
+    height: 400px;
     /*position: fixed;*/
     /*right: 5%;*/
     /*left: 205px;*/
@@ -98,6 +100,7 @@ ul {
 
 
 .tab-button {
+    /*left: 200px;*/
     padding: 6px 10px;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
@@ -118,7 +121,7 @@ ul {
 }
 
 .tab {
-    border: 1px solid #ccc;
+    /*border: 1px solid #ccc;*/
     padding: 10px;
 }
 
@@ -179,39 +182,17 @@ ul {
 }
 
 
+
 .input_name {
     width: 80px;
 }
 
-.left_select {
+.left_select{
     background: rgba(13, 14, 42, 0.97);
-    color: #282828;
     border: none;
-    width: 100%;
+    color: var(--bright-color);
 }
 
-
-#virus_level {
-    position: absolute;
-    display: block;
-    right: 40px;
-    top: 20px;
-    width: 500px;
-    height: 40px;
-    font-size: 24px;
-    color: #00ff39;
-}
-
-#epidemic_flashes {
-    position: absolute;
-    display: block;
-    right: 40px;
-    top: 40px;
-    width: 600px;
-    height: 60px;
-    font-size: 24px;
-    color: #ff0b00;
-}
 
 #virus_level.li{
     list-style-image: url('images/bio_marker.png');
@@ -276,4 +257,73 @@ textarea {
 
 p {
     font-size: 20px;
+}
+
+#infect_input{
+    max-width: 60px;
+}
+
+#vaccines{
+    position: absolute;
+    display: block;
+    top: 56px;
+    left: 45%;
+    border-bottom: 2px solid yellow;
+    z-index: 1000;
+    background: var(--params-bg);
+}
+
+#virus_level {
+    position: absolute;
+    display: block;
+    right: 0px;
+    top: 10px;
+    height: 40px;
+    font-size: 24px;
+    color: #00ff39;
+    background: var(--params-bg);
+    z-index: 1000;
+    width: 420px;
+    padding: 10px;
+}
+
+#epidemic_flashes {
+    position: absolute;
+    display: block;
+    font-size: 14px;
+    right: 0px;
+    top: 50px;
+    height: 60px;
+    color: #ff0b00;
+    z-index: 1000;
+    background: var(--params-bg);
+    width: 420px;
+    padding: 10px;
+}
+
+.virus_img{
+    width: 25px;
+    height: 25px;
+}
+
+#pyndemic_logo{
+    /*position: absolute;*/
+    display: inline-block;
+}
+
+#game_nav{
+    left: 30%;
+    /*position: fixed;*/
+    display: inline-block;
+}
+
+#text_area{
+    max-width: 350px;
+    max-height: 200px;
+}
+
+.player_field{
+    background: #2c3e50;
+    background-image: url('img/player_field_bg.png');
+    min-height: 150px;
 }

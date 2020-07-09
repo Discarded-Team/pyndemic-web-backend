@@ -1,13 +1,12 @@
 from src.game_managment import GamesDict
+from src.middleware import sessionMiddleware
 from src.routes import (
     moving_router,
     actions_router,
     auth_router,
     prepare_game_router
 )
-from src.middleware import sessionMiddleware
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
 import logging
 from fastapi.staticfiles import StaticFiles
 
@@ -15,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title='Pyndemic board game', debug=True)
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
+app.mount("/static2", StaticFiles(directory="frontend2"), name="static")
 
 
 @app.on_event("startup")
