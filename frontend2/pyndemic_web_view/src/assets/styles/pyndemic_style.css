@@ -71,7 +71,7 @@ ul {
 #rope {
     width: 100%;
     height: 10px;
-    background-image: url('images/rope.png');
+    background-image: url('../rope.png');
     background-repeat: repeat-x;
 }
 
@@ -92,7 +92,7 @@ ul {
     /*width: 100%;*/
 
     /*height: 450px;*/
-    height: 400px;
+    height: 600px;
     /*position: fixed;*/
     /*right: 5%;*/
     /*left: 205px;*/
@@ -195,7 +195,7 @@ ul {
 
 
 #virus_level.li{
-    list-style-image: url('images/bio_marker.png');
+    list-style-image: url('../bio_marker.png');
 }
 
 label {
@@ -317,13 +317,16 @@ p {
     display: inline-block;
 }
 
-#text_area{
-    max-width: 350px;
-    max-height: 200px;
+
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 20px;
 }
 
-.player_field{
-    background: #2c3e50;
-    background-image: url('img/player_field_bg.png');
-    min-height: 150px;
+a {
+  color: #42b983;
 }

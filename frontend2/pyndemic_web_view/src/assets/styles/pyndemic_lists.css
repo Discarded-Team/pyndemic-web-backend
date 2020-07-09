@@ -82,20 +82,6 @@
     padding: 0px;
 }
 
-
-.btn-danger.shuffle_btn {
-    border-radius: 10px;
-    height: 20px;
-    width: 70px;
-    background: linear-gradient(180deg, #ad556f, #9b2800);
-    border: none;
-    color: white;
-    cursor: pointer;
-    margin: 10px;
-    padding: 0px;
-}
-
-
 body {
     background: #fcf8f9;
 }

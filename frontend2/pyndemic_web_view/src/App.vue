@@ -1,5 +1,10 @@
+require('@/assets/styles/pyndemic_style.css')
+
 <template>
   <div id="app">
+    <router-link to="/">Home</router-link>
+    <router-link to="register">Register</router-link>
+    <router-link to="game">Game</router-link>
     <h1>Pyndemic App</h1>
     <router-view/>
   </div>
@@ -11,13 +16,5 @@ export default {
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style src="@/assets/styles/pyndemic_style.css">
 </style>

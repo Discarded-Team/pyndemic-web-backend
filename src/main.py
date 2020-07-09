@@ -5,9 +5,7 @@ from src.routes import (
     auth_router,
     prepare_game_router
 )
-from src.middleware import sessionMiddleware
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
 import logging
 from fastapi.staticfiles import StaticFiles
 
