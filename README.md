@@ -10,5 +10,5 @@ documentation in `/docs` endpoint
 ## frontend app
 Frontend server is Vue.js app
 * App directory is `frontend`
-* Available by url `/static/game_view`
+* Available by url `/static/game_view.html`
 * API deployed at `127.0.0.1:5000/actions/api/v1`
