@@ -62,7 +62,7 @@ function onIconDragEnd(e) {
     //         "destination": "London"
     //     }
     // }`);
-    alert(`${lat} ${lon} ${city_name}`);
+    alert(`${city_name}`);
 }
 
 function getIconHouse(title, lat, lon) {
