@@ -1,12 +1,11 @@
 import uuid
+
 from fastapi import Request
 from fastapi.responses import Response
 from starlette.middleware.base import BaseHTTPMiddleware
 
 
 class SessionMiddleware(BaseHTTPMiddleware):
-    def __init__(self, app):
-        super().__init__(app)
 
     async def dispatch(self, request: Request, call_next) -> Response:
 

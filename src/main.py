@@ -1,3 +1,8 @@
+import logging
+
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+
 from src.game_managment import GamesDict
 from src.middleware import SessionMiddleware
 from src.routes import (
@@ -5,10 +10,6 @@ from src.routes import (
     actions_router,
     prepare_game_router
 )
-
-from fastapi import FastAPI
-import logging
-from fastapi.staticfiles import StaticFiles
 
 logger = logging.getLogger(__name__)
 
