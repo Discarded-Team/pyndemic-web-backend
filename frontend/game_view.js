@@ -70,6 +70,13 @@ function onIconDragEnd(e) {
     //     }
     // }`);
     show_alert(city_name, '');
+    game_vue.user_cmd = `{
+    "type": "command",
+    "command": "move",
+    "args" : {
+        "destination": "${city_name}"
+    }
+}`;
 }
 
 function getIconHouse(title, lat, lon) {
@@ -851,7 +858,7 @@ let tab_game = Vue.component("tab-game", {
         //     this.user_cmd = x;
         // }
     },
-    props: ['logtext2'],
+    props: ['logtext', 'user_cmd'],
     watch: {
         old_cards: function () {
             if (this.old_cards.length > 0) {
@@ -906,6 +913,13 @@ infect Karachi
 infect Tokyo 
 infect Sydney 
 infect Ho Chi Minh City`,
+        user_cmd:  `{
+    "type": "command",
+    "command": "move",
+    "args" : {
+        "destination": "London"
+    }
+}`,
     },
     computed: {
         currentTabComponent: function () {
