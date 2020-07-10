@@ -206,12 +206,21 @@ function plotMap() {
         }
     }
 
+    function get_city_color(city_name){
+        let ind = names.indexOf(city_name);
+        return colors[ind];
+    }
 
     function onLineClick(e) {
-        let coord = e.latlng.toString().replace('LatLng', '');
+        // let coord = e.latlng.toString().replace('LatLng', '');
+        // let text = `${this.parent_name} <--> ${this.child_name} ${coord}`;
+        let color_parent = get_city_color(this.parent_name);
+        let color_child = get_city_color(this.child_name);
+
+        let text = `<span class="${color_parent}">${this.parent_name}</span> <--> <span class="${color_child}">${this.child_name}</span>`;
         popup
             .setLatLng(e.latlng)
-            .setContent(`${this.parent_name} <--> ${this.child_name} ${coord}`)
+            .setContent(text)
             .openOn(mymap);
     }
 
@@ -221,7 +230,8 @@ function plotMap() {
 
         line.parent_name = names[polylines_ind[i][0]];
         line.child_name = names[polylines_ind[i][1]];
-        line.on('click', onLineClick);
+        // line.on('click', onLineClick);
+        line.on('mouseover', onLineClick);
     }
 
 // draw cities
