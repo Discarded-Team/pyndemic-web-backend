@@ -70,6 +70,9 @@ function onIconDragEnd(e) {
     //     }
     // }`);
     show_alert(city_name, '');
+
+    let icon_name = e.target.options.icon_name;
+    if (icon_name === "hero"){
     game_vue.user_cmd = `{
     "type": "command",
     "command": "move",
@@ -77,6 +80,14 @@ function onIconDragEnd(e) {
         "destination": "${city_name}"
     }
 }`;
+    } else if (icon_name === 'building'){
+    game_vue.user_cmd = `{
+    {
+    "type": "command",
+    "command": "build"
+    "destination": "${city_name}"
+}`;
+    }
 }
 
 function getIconHouse(title, lat, lon) {
@@ -96,7 +107,8 @@ function getIconHouse(title, lat, lon) {
     return L.marker([lat, lon], {
         icon: meIcon,
         title: title,
-        draggable: true
+        draggable: true,
+        icon_name: "building",
     })
         .on('click', onIconClick)
         .on('dragend', onIconDragEnd);
@@ -118,7 +130,8 @@ function getIcon(title, color1, color2, color3, lat, lon) {
     return L.marker([lat, lon], {
         icon: meIcon,
         title: title,
-        draggable: true
+        draggable: true,
+        icon_name: "hero",
     })
         .on('click', onIconClick)
         .on('dragend', onIconDragEnd);
@@ -216,6 +229,14 @@ function plotMap() {
 
             if (!is_epidemy_step) {
                 // send_cmd player
+                game_vue.user_cmd = `{
+    "type": "command",
+    "command": "treat",
+    "args" : {
+        "colour": "Red",
+        "destination": "${circle.city_name}"
+    }
+}`
             }
         }
     }
