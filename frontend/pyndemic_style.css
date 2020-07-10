@@ -333,3 +333,18 @@ p {
     font-size: 10px;
     fill: white;
 }
+
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+    background: #ffffff52;
+    color: #333;
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.33);
+}
+
+.green{
+    color: forestgreen;
+}
+
+.leaflet-marker-icon.leaflet-interactive, .leaflet-image-layer.leaflet-interactive, .leaflet-pane > svg path.leaflet-interactive,
+svg.leaflet-image-layer.leaflet-interactive path {
+    cursor:crosshair !important;
+}

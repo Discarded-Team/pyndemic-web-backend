@@ -10,6 +10,13 @@ Math.degrees = function (radians) {
 
 var is_epidemy_step = false;
 
+
+function show_alert(title, text){
+     $('#modal_msg').modal('show');
+    $('#modal_title').text(title);
+    $('#modal_body').text(text);
+}
+
 function distance(lat1, lon1, lat2, lon2) {
     let R = 6371000;
     let f1 = Math.radians(lat1);
@@ -62,7 +69,7 @@ function onIconDragEnd(e) {
     //         "destination": "London"
     //     }
     // }`);
-    alert(`${city_name}`);
+    show_alert(city_name, '');
 }
 
 function getIconHouse(title, lat, lon) {
@@ -171,7 +178,7 @@ function plotMap() {
 
     function onCircleClick(e) {
         var sign = is_epidemy_step ? 1 : -1;
-        if  (!is_epidemy_step && e.target.virus_level < 1 || is_epidemy_step && e.target.virus_level === 3){
+        if (!is_epidemy_step && e.target.virus_level < 1 || is_epidemy_step && e.target.virus_level === 3) {
             return
         }
         if (e.target.virus_level <= 3) {
@@ -200,24 +207,58 @@ function plotMap() {
             // game_vue.cities_virus_levels[e.target.city_name] = circle.virus_level;
             cities_cicles[circle.city_ind] = circle;
 
-            if (!is_epidemy_step){
+            if (!is_epidemy_step) {
                 // send_cmd player
             }
         }
     }
 
-    function get_city_color(city_name){
-        let ind = names.indexOf(city_name);
+    function get_city_ind_by_name(city_name) {
+        return names.indexOf(city_name);
+    }
+
+    function get_city_color(city_name) {
+        let ind = get_city_ind_by_name(city_name);
         return colors[ind];
     }
 
-    function onLineClick(e) {
+    function onLineOver(e) {
         // let coord = e.latlng.toString().replace('LatLng', '');
         // let text = `${this.parent_name} <--> ${this.child_name} ${coord}`;
-        let color_parent = get_city_color(this.parent_name);
-        let color_child = get_city_color(this.child_name);
 
-        let text = `<span class="${color_parent}">${this.parent_name}</span> <--> <span class="${color_child}">${this.child_name}</span>`;
+        let lon_parent = lons[get_city_ind_by_name(this.parent_name)];
+        let lon_child = lats[get_city_ind_by_name(this.child_name)];
+
+        let parent_name = this.parent_name;
+        let child_name = this.child_name;
+
+        // if  (lon_parent < lon_child){
+        //     parent_name = this.child_name;
+        //     child_name =  this.parent_name;
+        // }
+        // yellow blue black red
+        let color_dict_num = {yellow: 3, blue: 2, black: 1, red: 0};
+        if (color_dict_num[get_city_color(parent_name)] < color_dict_num[get_city_color(child_name)]) {
+            parent_name = this.child_name;
+            child_name = this.parent_name;
+        }
+
+        if (color_dict_num[get_city_color(parent_name)] === color_dict_num[get_city_color(child_name)]) {
+            if (lon_parent < lon_child) {
+                parent_name = this.child_name;
+                child_name = this.parent_name;
+            }
+        }
+
+        let color_parent = get_city_color(parent_name);
+        let color_child = get_city_color(child_name);
+
+        // let text = `<span class="${color_parent}">${parent_name}</span>
+        //              <span class="green">⟷</span>
+        //              <span class="${color_child}">${child_name}</span>`;
+        let text = `<span class="${color_parent}">${parent_name}</span>
+                     <span class="green">✈</span>
+                     <span class="${color_child}">${child_name}</span>`;
         popup
             .setLatLng(e.latlng)
             .setContent(text)
@@ -231,7 +272,7 @@ function plotMap() {
         line.parent_name = names[polylines_ind[i][0]];
         line.child_name = names[polylines_ind[i][1]];
         // line.on('click', onLineClick);
-        line.on('mouseover', onLineClick);
+        line.on('mouseover', onLineOver);
     }
 
 // draw cities
@@ -638,6 +679,30 @@ let tab_game = Vue.component("tab-game", {
                 
         </div>
 </div>
+
+<!--    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_msg">-->
+<!--      Launch demo modal-->
+<!--    </button>-->
+
+    <div class="modal fade" id="modal_msg" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal_title">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div id="modal_body" class="modal-body">
+            ...
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+<!--            <button type="button" class="btn btn-primary">Save changes</button>-->
+          </div>
+        </div>
+      </div>
+</div>
 </div>
     `,
     mounted() {
@@ -676,7 +741,7 @@ let tab_game = Vue.component("tab-game", {
     },
     methods: {
         send_move: function () {
-            alert(this.user_cmd);
+           show_alert(title="Send cmd", text=this.user_cmd);
 
             // add cards to current player
 
@@ -707,12 +772,12 @@ let tab_game = Vue.component("tab-game", {
             }
 
             let res = getFromServer('http://127.0.0.1:8000/actions/api/v1', JSON.parse(this.user_cmd));
-            alert(`response: ${res}`);
+            show_alert("Response", res);
             this.old_cards = [];
             this.infectCities();
         },
         cancel_move: function () {
-            alert('cancel move');
+            show_alert('Info', 'Cancel move');
         },
         add: function () {
             alert('add');
