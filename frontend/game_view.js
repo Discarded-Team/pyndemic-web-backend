@@ -110,6 +110,26 @@ function getIcon(title, color1, color2, color3, lat, lon) {
         .on('dragend', onIconDragEnd);
 }
 
+function getIconCity(city_name, color, lat, lon) {
+    let svg = `
+    <svg  width="80" height="40"  xmlns="http://www.w3.org/2000/svg">
+      <text x="40" y="35" class="svg_city_name">${city_name}</text>
+    </svg>`;
+
+    let meIcon = L.divIcon({
+        className: "leaflet-data-marker",
+        html: svg,
+        iconAnchor: [80, 40],
+        iconSize: [80, 40],
+        popupAnchor: [0, -30],
+    });
+    return L.marker([lat, lon], {
+        icon: meIcon,
+        title: city_name,
+        draggable: false
+    });
+}
+
 var mymap = null;
 var cities_cicles = [];
 
@@ -135,7 +155,7 @@ function plotMap() {
     Stadia_AlidadeSmoothDark.addTo(mymap);
 
     function onCircleOver(e) {
-        let text = `${this.city_name} ${this.virus_level}`;
+        let text = `${this.virus_level}`;
         popup
             .setLatLng(e.latlng)
             .setContent(text)
@@ -228,6 +248,10 @@ function plotMap() {
         circle.on('click', onCircleClick);
 
         cities_cicles.push(circle);
+
+        let city_name_marker = getIconCity(names[i], color, lat, lon);
+        city_name_marker.addTo(mymap);
+
         // let text = `${circle.city_name} ${circle.virus_level}`;
         // circle.bindTooltip(text, opacity=0.6).openTooltip();
         // popup

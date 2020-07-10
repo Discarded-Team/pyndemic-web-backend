@@ -327,3 +327,9 @@ p {
     background-image: url('img/player_field_bg.png');
     min-height: 150px;
 }
+
+
+.svg_city_name{
+    font-size: 10px;
+    fill: white;
+}
