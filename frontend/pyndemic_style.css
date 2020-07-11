@@ -336,6 +336,8 @@ p {
     background: #2c3e50;
     background-image: url('img/player_field_bg.png');
     min-height: 150px;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
 
