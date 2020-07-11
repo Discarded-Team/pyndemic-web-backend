@@ -485,16 +485,16 @@ let tab_game = Vue.component("tab-game", {
         <div id="vaccines" class="game_params" align="left">
                 <img class='virus_img' src='img/virus_danger.png'/>
                 <input type="checkbox" id="vaccine_blue" value="false" v-model="vaccine_blue">
-                <label for="vaccine_blue"><span class="color_blue">blue</span></label>
+                <label for="vaccine_blue"><span class="color_blue">V1</span></label>
                 &nbsp
                 <input type="checkbox" id="vaccine_yellow" value="false" v-model="vaccine_yellow">
-                <label for="vaccine_yellow"><span class="color_yellow">yellow</span></label>
+                <label for="vaccine_yellow"><span class="color_yellow">V2</span></label>
                 &nbsp
                 <input type="checkbox" id="vaccine_black" value="false" v-model="vaccine_black">
-                <label for="vaccine_black"><span class="color_black">black</span></label>
+                <label for="vaccine_black"><span class="color_black">V3</span></label>
                 &nbsp
                 <input type="checkbox" id="vaccine_red" value="false" v-model="vaccine_red">
-                <label for="vaccine_red"><span class="color_red">red</span></label>
+                <label for="vaccine_red"><span class="color_red">V4</span></label>
         </div>
         <div id="virus_level">
             virus level
@@ -679,8 +679,8 @@ let tab_game = Vue.component("tab-game", {
             <div class="col-sm">
                   <div class="col-3 player_field">
                       <h4>Cards to move <span class="red">{{ old_cards.length }}</span>
-                      <button class="shuffle_btn btn btn-success" type="button" v-on:click="sort_old_cards">sort</button> 
-                      <button class="shuffle_btn btn btn-success" type="button" v-on:click="shuffle_old_cards">shuffle</button> 
+<!--                      <button class="shuffle_btn btn btn-success" type="button" v-on:click="sort_old_cards">sort</button> -->
+<!--                      <button class="shuffle_btn btn btn-success" type="button" v-on:click="shuffle_old_cards">shuffle</button> -->
                       </h4>
                       <draggable class="list-group" :list="old_cards"  group="people" @change="log">
                         <div
