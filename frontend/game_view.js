@@ -233,7 +233,7 @@ function plotMap() {
     "type": "command",
     "command": "treat",
     "args" : {
-        "colour": "Red",
+        "colour": "${circle.options.color}",
         "destination": "${circle.city_name}"
     }
 }`
@@ -678,7 +678,7 @@ let tab_game = Vue.component("tab-game", {
                
             <div class="col-sm">
                   <div class="col-3 player_field">
-                      <h4>Old cards {{ old_cards.length }}
+                      <h4>Cards to move <span class="red">{{ old_cards.length }}</span>
                       <button class="shuffle_btn btn btn-success" type="button" v-on:click="sort_old_cards">sort</button> 
                       <button class="shuffle_btn btn btn-success" type="button" v-on:click="shuffle_old_cards">shuffle</button> 
                       </h4>
@@ -691,14 +691,22 @@ let tab_game = Vue.component("tab-game", {
                           {{ element.name }}
                         </div>
                       </draggable>
-                    </div>
+                  </div>
+                  <div id="game_actions">
+                      <button class="game_action_btn btn btn-outline-primary" v-on:click="direct_fly">direct&nbsp✈&nbspfly</button>
+                      <button class="game_action_btn btn btn-outline-primary" v-on:click="charter_fly">charter&nbsp✈&nbspfly</button>
+                      <button class="game_action_btn btn btn-outline-primary" v-on:click="shuttle_fly">shuttle&nbsp✈&nbspfly</button>
+                      <button class="game_action_btn btn btn-outline-info" v-on:click="share_card">share 🤝 card</button>
+                      <button class="game_action_btn btn btn-outline-success" v-on:click="make_vaccine">make&nbsp&nbsp🔬&nbsp&nbspvaccine</button>
+                      <button class="game_action_btn btn btn-outline-danger" v-on:click="pass_move">pass</button>
+                  </div>
             </div>      
             <div class="col-sm">
                          <div class="col-3 player_field drive_panel">
                                 <h4>Send command</h4>
                                 <textarea v-model="user_cmd" id="text_area">
                                 </textarea><br>
-                                <button class="shuffle_btn btn btn-success" v-on:click="send_move">move</button>
+                                <button class="shuffle_btn btn btn-success" v-on:click="send_move">send</button>
                                 <button class="shuffle_btn btn btn-danger" v-on:click="cancel_move">cancel</button>
                          </div>
             </div>
@@ -768,6 +776,50 @@ let tab_game = Vue.component("tab-game", {
         }
     },
     methods: {
+        replace_cmd: function(user_cmd_text, cmd){
+            let user_cmd_dict = JSON.parse(user_cmd_text);
+            user_cmd_dict['command'] = cmd;
+            this.user_cmd = JSON.stringify(user_cmd_dict, null, 2);
+        },
+        player_move: function(){
+            this.replace_cmd(this.user_cmd, "move");
+        },
+        direct_fly: function(){
+            this.replace_cmd(this.user_cmd, "fly");
+        },
+        charter_fly: function(){
+            this.replace_cmd(this.user_cmd, "charter");
+        },
+        shuttle_fly: function(){
+            this.replace_cmd(this.user_cmd, "shuttle");
+        },
+        make_vaccine: function(){
+            this.user_cmd = `{
+    "type": "command",
+    "command": "cure",
+    "args" : {
+        "cards": ${JSON.stringify(this.old_cards.map(value => value.name))}
+    }
+}`;
+        },
+        share_card: function(){
+            this.user_cmd = `{
+    "type": "command",
+    "command": "share",
+    "args" : {
+        "card": "${this.old_cards[0].name}",
+        "player": "Bravo"
+    }
+  }
+`;
+        },
+        pass_move: function(){
+           this.user_cmd = `{
+    "type": "command",
+    "command": "pass"
+}
+`
+        },
         send_move: function () {
            show_alert(title="Send cmd", text=this.user_cmd);
 
