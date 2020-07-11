@@ -483,7 +483,7 @@ let tab_game = Vue.component("tab-game", {
     template: `<div>
 <div class="game_params">
         <div id="vaccines" class="game_params">
-           <div class="row text-center"><h5>vaccines 🧪</h5></div>
+           <div class="row text-center"><h5>&nbsp&nbsp&nbspvaccines 🧪</h5></div>
            <div class="row">
 <!--                <img class='virus_img' src='img/virus_danger.png'/>-->
                 <div class="vaccine_ans color_blue col">
