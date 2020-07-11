@@ -13,7 +13,9 @@ router = APIRouter()
              description='Send a gameplay command to the game controller')
 async def api_call(request: Request) -> Response:
     game_request = request.json()
-    game_id = request.session.get('game_id')
+    session = request.state.player
+    # TODO: right method for getting "game_id" from session
+    game_id = session.get('game_id')
 
     if not game_id:
         logging.error(
