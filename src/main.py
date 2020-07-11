@@ -1,13 +1,14 @@
+import logging
+
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+
 from src.game_managment import GamesDict
-from src.middleware import sessionMiddleware
+from src.middleware import SessionMiddleware
 from src.routes import (
     api_router,
-    auth_router,
-    prepare_game_router
+    prepare_game_router,
 )
-from fastapi import FastAPI
-import logging
-from fastapi.staticfiles import StaticFiles
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,6 @@ async def start_server():
 async def shutdown_server():
     logger.info('Server have shutdown')
 
-app.add_middleware(sessionMiddleware)
+app.add_middleware(SessionMiddleware)
 app.include_router(api_router, prefix='/api', tags=['api'])
-app.include_router(auth_router, tags=['auth'])
 app.include_router(prepare_game_router, tags=['prepare_game'])
