@@ -281,8 +281,9 @@ p {
     border-bottom: 2px solid yellow;
     z-index: 1000;
     background: var(--params-bg);
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 10px;
 }
 
 #virus_level {
