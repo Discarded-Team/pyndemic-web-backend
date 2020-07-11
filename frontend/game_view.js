@@ -11,8 +11,8 @@ Math.degrees = function (radians) {
 var is_epidemy_step = false;
 
 
-function show_alert(title, text){
-     $('#modal_msg').modal('show');
+function show_alert(title, text) {
+    $('#modal_msg').modal('show');
     $('#modal_title').text(title);
     $('#modal_body').text(text);
 }
@@ -72,16 +72,16 @@ function onIconDragEnd(e) {
     show_alert(city_name, '');
 
     let icon_name = e.target.options.icon_name;
-    if (icon_name === "hero"){
-    game_vue.user_cmd = `{
+    if (icon_name === "hero") {
+        game_vue.user_cmd = `{
     "type": "command",
     "command": "move",
     "args" : {
         "destination": "${city_name}"
     }
 }`;
-    } else if (icon_name === 'building'){
-    game_vue.user_cmd = `{
+    } else if (icon_name === 'building') {
+        game_vue.user_cmd = `{
     {
     "type": "command",
     "command": "build"
@@ -482,19 +482,31 @@ Vue.use(vuedraggable);
 let tab_game = Vue.component("tab-game", {
     template: `<div>
 <div class="game_params">
-        <div id="vaccines" class="game_params" align="left">
-                <img class='virus_img' src='img/virus_danger.png'/>
-                <input type="checkbox" id="vaccine_blue" value="false" v-model="vaccine_blue">
-                <label for="vaccine_blue"><span class="color_blue">V1</span></label>
-                &nbsp
-                <input type="checkbox" id="vaccine_yellow" value="false" v-model="vaccine_yellow">
-                <label for="vaccine_yellow"><span class="color_yellow">V2</span></label>
-                &nbsp
-                <input type="checkbox" id="vaccine_black" value="false" v-model="vaccine_black">
-                <label for="vaccine_black"><span class="color_black">V3</span></label>
-                &nbsp
-                <input type="checkbox" id="vaccine_red" value="false" v-model="vaccine_red">
-                <label for="vaccine_red"><span class="color_red">V4</span></label>
+        <div id="vaccines" class="game_params">
+           <div class="row text-center"><h5>vaccines 🧪</h5></div>
+           <div class="row">
+<!--                <img class='virus_img' src='img/virus_danger.png'/>-->
+                <div class="vaccine_ans color_blue col">
+                        <input type="checkbox" id="vaccine_blue" value="false" v-model="vaccine_blue">
+<!--                    <label for="vaccine_blue">🧬</label>-->
+                </div>
+                
+                <div class="vaccine_ans color_yellow col">
+                        <input type="checkbox" id="vaccine_yellow" value="false" v-model="vaccine_yellow">
+<!--                        <label for="vaccine_yellow">🧫</label>-->
+                </div>
+                
+                <div class="vaccine_ans color_black col">
+                        <input type="checkbox" id="vaccine_black" value="false" v-model="vaccine_black">
+<!--                        <label for="vaccine_black">🦠</label>-->
+                </div>
+                
+                 <div class="vaccine_ans color_red col">  
+                        <input type="checkbox" id="vaccine_red" value="false" v-model="vaccine_red">
+<!--                        <label for="vaccine_red">🧪</label>-->
+                </div> 
+                <!--     ☣⚠ 🧬🧫🦠🧪💊       -->
+           </div>
         </div>
         <div id="virus_level">
             virus level
@@ -776,24 +788,24 @@ let tab_game = Vue.component("tab-game", {
         }
     },
     methods: {
-        replace_cmd: function(user_cmd_text, cmd){
+        replace_cmd: function (user_cmd_text, cmd) {
             let user_cmd_dict = JSON.parse(user_cmd_text);
             user_cmd_dict['command'] = cmd;
             this.user_cmd = JSON.stringify(user_cmd_dict, null, 2);
         },
-        player_move: function(){
+        player_move: function () {
             this.replace_cmd(this.user_cmd, "move");
         },
-        direct_fly: function(){
+        direct_fly: function () {
             this.replace_cmd(this.user_cmd, "fly");
         },
-        charter_fly: function(){
+        charter_fly: function () {
             this.replace_cmd(this.user_cmd, "charter");
         },
-        shuttle_fly: function(){
+        shuttle_fly: function () {
             this.replace_cmd(this.user_cmd, "shuttle");
         },
-        make_vaccine: function(){
+        make_vaccine: function () {
             this.user_cmd = `{
     "type": "command",
     "command": "cure",
@@ -802,7 +814,7 @@ let tab_game = Vue.component("tab-game", {
     }
 }`;
         },
-        share_card: function(){
+        share_card: function () {
             this.user_cmd = `{
     "type": "command",
     "command": "share",
@@ -813,15 +825,15 @@ let tab_game = Vue.component("tab-game", {
   }
 `;
         },
-        pass_move: function(){
-           this.user_cmd = `{
+        pass_move: function () {
+            this.user_cmd = `{
     "type": "command",
     "command": "pass"
 }
 `
         },
         send_move: function () {
-           show_alert(title="Send cmd", text=this.user_cmd);
+            show_alert(title = "Send cmd", text = this.user_cmd);
 
             // add cards to current player
 
@@ -986,7 +998,7 @@ infect Karachi
 infect Tokyo 
 infect Sydney 
 infect Ho Chi Minh City`,
-        user_cmd:  `{
+        user_cmd: `{
     "type": "command",
     "command": "move",
     "args" : {
