@@ -9,7 +9,7 @@ from .utils import error_response
 router = APIRouter()
 
 
-@router.post('/api',
+@router.post('/api/v1',
              description='Send a gameplay command to the game controller')
 async def api_call(request: Request) -> Response:
     game_request = request.json()
