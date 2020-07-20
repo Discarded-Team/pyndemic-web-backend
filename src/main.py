@@ -2,8 +2,8 @@ import logging
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from pyndemic import config
 
-from src.game_managment import GamesDict
 from src.middleware import SessionMiddleware
 from src.routes import (
     moving_router,
@@ -19,8 +19,9 @@ app.mount("/static2", StaticFiles(directory="frontend2"), name="static")
 
 
 @app.on_event("startup")
-async def start_server():
-    app.state.games = GamesDict()
+def start_server():
+    config.refresh_settings()
+    app.state.games = dict()
     logger.info('Server have started')
 
 
