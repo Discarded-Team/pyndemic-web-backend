@@ -1,12 +1,11 @@
-from fastapi import APIRouter, Request, BackgroundTasks
-from fastapi.responses import JSONResponse
-from src.game_managment import GameSession
-from pydantic import Field, BaseModel
-from pyndemic.game import Game
-from pyndemic.formatter import BaseFormatter
-from datetime import datetime
 import logging
-from typing import Dict
+
+from fastapi import APIRouter, Request
+from fastapi.responses import JSONResponse
+from pyndemic.controller import GameController
+from pydantic import BaseModel
+
+from src.game_managment import find_game, GameIsMissingError
 
 logger = logging.getLogger(__name__)
 
@@ -14,89 +13,50 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
-class GameConfig(BaseModel):
-    owner_name: str
-    # difficult: int = Field(..., ge=1, le=4,
-    #                        description='Difficult of the game 1 to 4 there 1 is very easy and 4 is very hard')
-    # player_count: int = Field(..., ge=1, le=6,
-    #                           description='Count playeer for new game')
-    difficult: str
-    player_count: str
+class GameOptions(BaseModel):
+    # It's temporary arguments, while we don't know which use
+    difficult: int = None
+    player_count: int = None
 
 
-class GameDescription(BaseModel):
-    name: str
-    owner_name: str
-    difficult: int
-    players: Dict[str, str]
-    player_count: int
-    created: str
+class JoinGameOptions(BaseModel):
+    game_id: str
 
 
-@router.get(
+@router.post(
     '/create_new_game',
-    description='Create instance of the Game',
-    response_model=GameDescription
+    description='Create instance of the Game'
 )
-async def create_new_game(
-    request: Request,
-    game_config: GameConfig,
-    background_tasks: BackgroundTasks,
-):
-    game = Game()
-    current_player = request.state.player
-    background_tasks.add_task(setup_game, game)
-    gameSession = GameSession(owner_name=game_config.owner_name,
-                              owner_user_id=current_player,
-                              difficult=game_config.difficult,
-                              player_count=game_config.player_count,
-                              created=datetime.utcnow().isoformat(),
-                              game=game)
+async def create_new_game(request: Request, game_options: GameOptions):
 
-    request.app.state.games.update({current_player: gameSession})
+    # TODO bind request.state.session with controller or keep game_id in session
 
-    response = {'name': current_player,
-                'owner': current_player,
-                'difficult': gameSession.difficult,
-                'players': gameSession.players,
-                'player_count': f'1 of {gameSession.player_count}',
-                'created': gameSession.created}
+    controller = GameController()
+    game_id = controller._ctx
+    request.app.state.games.update({game_id: controller})
+    response = {'status': 'success',
+                'game_id': game_id}
+
     return response
 
 
-def setup_game(game: Game) -> None:
-    game.setup_game()
-    logger.info('Game have setuped')
-
-
-@router.get(
-    '/join_game/{game_name}/{character_name}',
-    description='Join to game',
-    response_model=GameDescription
+@router.post(
+    '/join_game',
+    description='Join to game'
 )
 async def join_game(
     request: Request,
-    game_name: str,
-    character_name: str
+    join_game_options: JoinGameOptions
 ):
-    current_player = request.state.player
-    gameSessions = request.app.state.games
-    gameSession = find_game(current_player, gameSessions)
-    gameSession.add_player(character_name, current_player)
-
-    response = {'name': gameSession.name,
-                'owner': gameSession.owner_user_id,
-                'difficult': gameSession.difficult,
-                'players': gameSession.players,
-                'player_count': f'{len(gameSession.players.items())} of {gameSession.player_count}',
-                'created': gameSession.created}
+    game_id = JoinGameOptions.game_id
+    try:
+        controller = find_game(request, game_id)
+        response = {'status': 'success',
+                    'game_id': controller.game_id}
+    except GameIsMissingError:
+        response = {'status': 'failure',
+                    'description': 'game is missing'}
     return response
-
-
-def find_game(current_player, games):
-    for gameSession in games.values():
-        if current_player in gameSession.players.keys():
-            return gameSession
 
 
 @router.get(
