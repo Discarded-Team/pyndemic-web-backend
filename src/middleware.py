@@ -10,9 +10,7 @@ class SessionMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next) -> Response:
 
         session = request.cookies.get('session', None)
-
-        # TODO change request.state.player to change request.state.session
-        request.state.player = session
+        request.state.session = session
         response = await call_next(request)
 
         if not session:
