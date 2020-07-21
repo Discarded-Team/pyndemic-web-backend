@@ -32,7 +32,7 @@ async def create_new_game(request: Request, game_options: GameOptions):
     # TODO bind request.state.session with controller or keep game_id in session
 
     controller = GameController()
-    game_id = controller._ctx
+    game_id = controller._ctx['id']
     request.app.state.games.update({game_id: controller})
     response = {'status': 'success',
                 'game_id': game_id}
