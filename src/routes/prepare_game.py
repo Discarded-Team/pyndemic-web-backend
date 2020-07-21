@@ -52,7 +52,7 @@ async def join_game(
     try:
         controller = find_game(request, game_id)
         response = {'status': 'success',
-                    'game_id': controller.game_id}
+                    'game_id': controller._ctx['id']}
     except GameIsMissingError:
         response = {'status': 'failure',
                     'description': 'game is missing'}
