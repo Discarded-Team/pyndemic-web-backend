@@ -51,7 +51,27 @@
 
 
     <keep-alive>
-        <component v-bind:is="currentTabComponent" class="tab" :logtext="logtext" :user_cmd="user_cmd" :game_state="game_state"></component>
+        <TabGame   ref="tab_game"
+                   v-bind:is="currentTabComponent"
+                   class="tab"
+                   :logtext="logtext"
+                   :user_cmd="user_cmd"
+                   :game_state="game_state">
+        </TabGame>
+        <TabStats ref="tab_stats"
+                   v-bind:is="currentTabComponent"
+                   class="tab"
+                   :logtext="logtext"
+                   :user_cmd="user_cmd"
+                   :game_state="game_state">
+        </TabStats>
+        <TabHome ref="tab_home"
+                   v-bind:is="currentTabComponent"
+                   class="tab"
+                   :logtext="logtext"
+                   :user_cmd="user_cmd"
+                   :game_state="game_state">
+        </TabHome>
     </keep-alive>
 </div>
 

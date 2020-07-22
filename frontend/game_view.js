@@ -62,13 +62,6 @@ function onIconDragEnd(e) {
     let lon = e.target._latlng.lng;
     let city_name = get_closest(lat, lon);
 
-    // tab_game.$set('user_cmd', `{
-    //     "type": "command",
-    //     "command": "move",
-    //     "args" : {
-    //         "destination": "London"
-    //     }
-    // }`);
     show_alert(city_name, '');
 
     let icon_name = e.target.options.icon_name;
@@ -80,6 +73,7 @@ function onIconDragEnd(e) {
         "destination": "${city_name}"
     }
 }`;
+        game_vue.game_state.players_positions[e.target.options.title] = city_name;
     } else if (icon_name === 'building') {
         game_vue.user_cmd = `{
     {
@@ -87,6 +81,7 @@ function onIconDragEnd(e) {
     "command": "build"
     "destination": "${city_name}"
 }`;
+        game_vue.game_state.buildings_positions[e.target.options.title] = city_name;
     }
 }
 
@@ -109,6 +104,7 @@ function getIconHouse(title, lat, lon) {
         title: title,
         draggable: true,
         icon_name: "building",
+        player_name: 'building'
     })
         .on('click', onIconClick)
         .on('dragend', onIconDragEnd);
@@ -427,7 +423,8 @@ Vue.component("tab-home", {
             player4_name: 'Chuck',
             complexity: 2,
         }
-    }
+    },
+    props: ['logtext', 'user_cmd', 'game_state']
 });
 
 
@@ -756,6 +753,7 @@ let tab_game = Vue.component("tab-game", {
     mounted() {
         plotMap();
     },
+    props: ['logtext', 'user_cmd', 'game_state'],
     data: function () {
         return {
             current_player: 'Doctor',
@@ -774,16 +772,8 @@ let tab_game = Vue.component("tab-game", {
             vaccine_yellow: false,
             vaccine_blue: false,
             vaccine_black: false,
-            user_cmd: `{
-    "type": "command",
-    "command": "move",
-    "args" : {
-        "destination": "London"
-    }
-}`,
             virus_level: 1,
             epidemic_flashes: 0,
-            // current_player: 'Scientist',
             cities_virus_levels: init_cities_virus_levels,
         }
     },
@@ -791,22 +781,23 @@ let tab_game = Vue.component("tab-game", {
         replace_cmd: function (user_cmd_text, cmd) {
             let user_cmd_dict = JSON.parse(user_cmd_text);
             user_cmd_dict['command'] = cmd;
-            this.user_cmd = JSON.stringify(user_cmd_dict, null, 2);
+            this.$parent.user_cmd = JSON.stringify(user_cmd_dict, null, 2);
         },
         player_move: function () {
-            this.replace_cmd(this.user_cmd, "move");
+            // this.replace_cmd(this.$parent.user_cmd, "move");
+
         },
         direct_fly: function () {
-            this.replace_cmd(this.user_cmd, "fly");
+            this.replace_cmd(this.$parent.user_cmd, "fly");
         },
         charter_fly: function () {
-            this.replace_cmd(this.user_cmd, "charter");
+            this.replace_cmd(this.$parent.user_cmd, "charter");
         },
         shuttle_fly: function () {
-            this.replace_cmd(this.user_cmd, "shuttle");
+            this.replace_cmd(this.$parent.user_cmd, "shuttle");
         },
         make_vaccine: function () {
-            this.user_cmd = `{
+            this.$parent.user_cmd = `{
     "type": "command",
     "command": "cure",
     "args" : {
@@ -815,7 +806,7 @@ let tab_game = Vue.component("tab-game", {
 }`;
         },
         share_card: function () {
-            this.user_cmd = `{
+            this.$parent.user_cmd = `{
     "type": "command",
     "command": "share",
     "args" : {
@@ -826,7 +817,7 @@ let tab_game = Vue.component("tab-game", {
 `;
         },
         pass_move: function () {
-            this.user_cmd = `{
+            this.$parent.user_cmd = `{
     "type": "command",
     "command": "pass"
 }
@@ -836,7 +827,6 @@ let tab_game = Vue.component("tab-game", {
             show_alert(title = "Send cmd", text = this.user_cmd);
 
             // add cards to current player
-
             let additional_cards = this.game_cards
                 .map(x => ({x, r: Math.random()}))
                 .sort((a, b) => a.r - b.r)
@@ -863,9 +853,14 @@ let tab_game = Vue.component("tab-game", {
                     break;
             }
 
-            let res = getFromServer('http://127.0.0.1:8000/actions/api/v1', JSON.parse(this.user_cmd));
-            show_alert("Response", res);
+            try {
+                let res = getFromServer('http://127.0.0.1:8000/api/v1', JSON.parse(this.user_cmd));
+                show_alert("Response", res);
+            } catch (e) {
+                console.log(e);
+            }
             this.old_cards = [];
+            this.$parent.logtext += '\n' + this.user_cmd + '\n';
             this.infectCities();
         },
         cancel_move: function () {
@@ -928,27 +923,19 @@ let tab_game = Vue.component("tab-game", {
 
             for (let i = 0; i < selected_inds.length; i++) {
                 let ind = selected_inds[i];
-                let latlngPoint = cities_cicles[ind].getLatLng();
                 let logmsg = `infect ${names[ind]}`;
                 console.log(logmsg);
                 cities_cicles[ind].fire('click');
-                // this.logtext2 += logmsg + '\n';
+                this.$parent.logtext += logmsg + '\n';
             }
             is_epidemy_step = false;
         },
-        get_state: function () {
-            return JSON.parse();
-        },
-        // change_user_cmd: function(x){
-        //     this.user_cmd = x;
-        // }
     },
-    props: ['logtext', 'user_cmd', 'game_state'],
     watch: {
         old_cards: function () {
             if (this.old_cards.length > 0) {
                 let last_city = this.old_cards[0];
-                this.user_cmd = `{
+                this.$parent.user_cmd = `{
     "type": "command",
     "command": "fly",
     "args" : {
@@ -957,17 +944,50 @@ let tab_game = Vue.component("tab-game", {
 }`
             }
         },
+        computed: {
+            function() {
+                let child_game_state = {};
+                let keys = ['current_player',
+                    'cards_doctor',
+                    'cards_scientist',
+                    'cards_researcher',
+                    'cards_caranteene',
+                    'game_cards',
+                    'old_cards',
+                    'vaccine_red',
+                    'vaccine_yellow',
+                    'vaccine_blue',
+                    'vaccine_black',
+                    'virus_level',
+                    'epidemic_flashes'];
+                for (let i = 0; i < keys.length; i++) {
+                    let k = keys[i];
+                    child_game_state[k] = this[k];
+                }
+                return child_game_state;
+            }
+        },
         deep: true
     }
 });
 
 Vue.component("tab-stats", {
         template: `
-<div>
-    <textarea v-model="logtext">
-    </textarea>    
+<div class="container">
+<div class="row">
+    <div class="col"><h3>History</h3></div>
+    <div class="col"><h3>Game state</h3></div>
+</div>
+    <div class="row">
+        <div class="col">
+            <textarea>{{ logtext }}</textarea>
+        </div>
+        <div class="col">
+            <textarea>{{ JSON.stringify(game_state, null, 2) }}</textarea>
+        </div>
+    </div>
 </div>`,
-        props: ["logtext", "game_state"]
+        props: ["logtext", 'user_cmd', "game_state"],
     },
 );
 
@@ -977,36 +997,21 @@ let game_state_init = {
     doctor: 'Alice',
     researcher: 'Bob',
     scientist: 'Charlie',
-    caranteener: 'Chuck'
+    caranteener: 'Chuck',
+    players_positions: {
+        Doctor: 'Atlanta',
+        Researcher: 'Atlanta',
+        Scientist: 'Atlanta',
+        Caranteener: 'Atlanta'
+    },
+    buildings_positions: ['Atlanta']
 };
 let game_vue = new Vue({
     el: "#dynamic-component-demo",
     data: {
-        game_state: game_state_init,
         currentTab: "Game",
         tabs: ["Home", "Game", "Stats"],
-        logtext: `
-Game log: 
-infect Los Angeles 
-infect Lagos 
-infect Shanghai 
-infect Milan 
-infect Bangkok 
-infect Tehran 
-infect Bogota 
-infect Seoul 
-infect Istanbul 
-infect Miami 
-infect Johannesburg 
-infect Osaka 
-infect London 
-infect Jakarta 
-infect Madrid 
-infect St. Petersburg 
-infect Karachi 
-infect Tokyo 
-infect Sydney 
-infect Ho Chi Minh City`,
+        logtext: " ",
         user_cmd: `{
     "type": "command",
     "command": "move",
@@ -1018,6 +1023,33 @@ infect Ho Chi Minh City`,
     computed: {
         currentTabComponent: function () {
             return "tab-" + this.currentTab.toLowerCase();
+        },
+        game_state: function () {
+            let game_state = game_state_init;
+            let cities_levels = [];
+            for (let i = 0; i < cities_cicles.length; i++) {
+                cities_levels.push(cities_cicles[i].virus_level);
+            }
+            game_state['cities_levels'] = cities_levels;
+            // sync keys
+            let keys = ['current_player',
+                'cards_doctor',
+                'cards_scientist',
+                'cards_researcher',
+                'cards_caranteene',
+                'game_cards',
+                'old_cards',
+                'vaccine_red',
+                'vaccine_yellow',
+                'vaccine_blue',
+                'vaccine_black',
+                'virus_level',
+                'epidemic_flashes'];
+            for (let i = 0; i < keys.length; i++) {
+                let k = keys[i];
+                // game_state[k] = this.$refs.tab_game.child_game_state[k];
+            }
+            return game_state;
         }
     },
     methods: {
