@@ -399,14 +399,14 @@ Vue.component("tab-home", {
     </div>
     <div id="first_menu" class="col-md-8">
         <center>
-            <img class='card_img' src="img/Doctor.jpg"/>
+            <img class='card_img' src="img/Doctor.svg"/>
             &nbsp &nbsp
-            <img class='card_img' src="img/Researcher.jpg"/>
+            <img class='card_img' src="img/Researcher.svg"/>
             <br>
             &nbsp &nbsp
-            <img class='card_img' src="img/Scientist.jpg"/>
+            <img class='card_img' src="img/Scientist.svg"/>
             &nbsp &nbsp
-            <img class='card_img' src="img/Caranteener.jpg"/>
+            <img class='card_img' src="img/Caranteener.svg"/>
             <br>
             <br>
             <button id="start_btn" type="button" class="btn btn-success" onclick="start_game()">start</button>
@@ -567,7 +567,7 @@ let tab_game = Vue.component("tab-game", {
 <div class="row h-75">
     <div id="left_menu" class="left_side_small bg_dark_color col-md-2">
         <h3>Players</h3>
-         <img class='card_img_static' v-bind:src="'img/' + current_player +'.jpg'"/>
+         <img class='card_img_static' v-bind:src="'img/' + current_player +'.svg'"/>
          <br>
         <select v-model="current_player" size="4" class="left_select">
             <option><span class="player_span">Doctor</span></option>
