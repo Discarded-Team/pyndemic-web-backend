@@ -318,7 +318,7 @@ p {
     position: absolute;
     display: block;
     top: 50px;
-    left: 45%;
+    left: 21%;
     border-bottom: 2px solid yellow;
     z-index: 1000;
     background: var(--params-bg);
