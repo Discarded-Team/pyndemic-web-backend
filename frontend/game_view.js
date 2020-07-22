@@ -943,7 +943,7 @@ let tab_game = Vue.component("tab-game", {
         //     this.user_cmd = x;
         // }
     },
-    props: ['logtext', 'user_cmd'],
+    props: ['logtext', 'user_cmd', 'game_state'],
     watch: {
         old_cards: function () {
             if (this.old_cards.length > 0) {
@@ -964,16 +964,25 @@ let tab_game = Vue.component("tab-game", {
 Vue.component("tab-stats", {
         template: `
 <div>
-    <textarea v-model="logtext2">
+    <textarea v-model="logtext">
     </textarea>    
 </div>`,
-        props: ["logtext2"]
+        props: ["logtext", "game_state"]
     },
 );
 
+
+let game_state_init = {
+    complexity: 2,
+    doctor: 'Alice',
+    researcher: 'Bob',
+    scientist: 'Charlie',
+    caranteener: 'Chuck'
+};
 let game_vue = new Vue({
     el: "#dynamic-component-demo",
     data: {
+        game_state: game_state_init,
         currentTab: "Game",
         tabs: ["Home", "Game", "Stats"],
         logtext: `

@@ -11,7 +11,7 @@
     --black-color: #2B2B2B;
     --bright-color: #00f9ff;
     --dark-menu: #141414;
-    --params-bg: rgba(0,0,0,0.5);
+    --params-bg: rgba(0, 0, 0, 0.5);
 }
 
 html, body {
@@ -21,6 +21,7 @@ html, body {
 .bg_dark_color {
     background: var(--black-color);
 }
+
 h1, h2 {
     color: var(--super-red-color);
     /*font-family: 'Ubuntu', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;*/
@@ -29,7 +30,48 @@ h1, h2 {
 
 h3, h4, h5, h6 {
     color: rgba(255, 255, 255, 0.72);
-    font-family: Architects Daughter; font-size: 24px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 26.4px; } h3 { font-family: Architects Daughter; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 15.4px; } p { font-family: Architects Daughter; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 20px; } blockquote { font-family: Architects Daughter; font-size: 21px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 30px; } pre { font-family: Architects Daughter; font-size: 13px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 18.5667px;
+    font-family: Architects Daughter;
+    font-size: 24px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 700;
+    line-height: 26.4px;
+}
+
+h3 {
+    font-family: Architects Daughter;
+    font-size: 14px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 700;
+    line-height: 15.4px;
+}
+
+p {
+    font-family: Architects Daughter;
+    font-size: 14px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+blockquote {
+    font-family: Architects Daughter;
+    font-size: 21px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 30px;
+}
+
+pre {
+    font-family: Architects Daughter;
+    font-size: 13px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 18.5667px;
 }
 
 .card_img_static {
@@ -191,19 +233,18 @@ ul {
 }
 
 
-
 .input_name {
     width: 80px;
 }
 
-.left_select{
+.left_select {
     background: rgba(13, 14, 42, 0.97);
     border: none;
     color: var(--bright-color);
 }
 
 
-#virus_level.li{
+#virus_level.li {
     list-style-image: url('images/bio_marker.png');
 }
 
@@ -269,11 +310,11 @@ p {
     font-size: 20px;
 }
 
-#infect_input{
+#infect_input {
     max-width: 60px;
 }
 
-#vaccines{
+#vaccines {
     position: absolute;
     display: block;
     top: 50px;
@@ -314,28 +355,28 @@ p {
     padding: 10px;
 }
 
-.virus_img{
+.virus_img {
     width: 25px;
     height: 25px;
 }
 
-#pyndemic_logo{
+#pyndemic_logo {
     /*position: absolute;*/
     display: inline-block;
 }
 
-#game_nav{
+#game_nav {
     left: 30%;
     /*position: fixed;*/
     display: inline-block;
 }
 
-#text_area{
+#text_area {
     max-width: 350px;
     max-height: 200px;
 }
 
-.player_field{
+.player_field {
     background: #2c3e50;
     background-image: url('img/player_field_bg.png');
     min-height: 150px;
@@ -344,7 +385,7 @@ p {
 }
 
 
-.svg_city_name{
+.svg_city_name {
     font-size: 10px;
     fill: white;
 }
@@ -355,31 +396,72 @@ p {
     box-shadow: 0 3px 14px rgba(0, 0, 0, 0.33);
 }
 
-.green{
+.green {
     color: forestgreen;
 }
 
 .leaflet-marker-icon.leaflet-interactive, .leaflet-image-layer.leaflet-interactive, .leaflet-pane > svg path.leaflet-interactive,
 svg.leaflet-image-layer.leaflet-interactive path {
-    cursor:crosshair !important;
+    cursor: crosshair !important;
 }
 
-.game_action_btn{
+.game_action_btn {
     padding: 10px;
     margin: 3px;
 }
 
 
-.modal-title{
+.modal-title {
     color: forestgreen;
 }
 
 .hand-written {
-    font-family: Architects Daughter; font-size: 24px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 26.4px; } h3 { font-family: Architects Daughter; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 15.4px; } p { font-family: Architects Daughter; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 20px; } blockquote { font-family: Architects Daughter; font-size: 21px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 30px; } pre { font-family: Architects Daughter; font-size: 13px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 18.5667px;
+    font-family: Architects Daughter;
+    font-size: 24px;
+    font-style: normal;
+    font-variant: normal;
+    /*font-weight: 700;*/
+    line-height: 26.4px;
 }
 
-.vaccine_ans{
-   margin-left: 4px;
-   margin-right: 4px;
+h3 {
+    font-family: Architects Daughter;
+    font-size: 14px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 700;
+    line-height: 15.4px;
+}
+
+p {
+    font-family: Architects Daughter;
+    font-size: 14px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+blockquote {
+    font-family: Architects Daughter;
+    font-size: 21px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 30px;
+}
+
+pre {
+    font-family: Architects Daughter;
+    font-size: 13px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 18.5667px;
+}
+
+.vaccine_ans {
+    margin-left: 4px;
+    margin-right: 4px;
 
 }
