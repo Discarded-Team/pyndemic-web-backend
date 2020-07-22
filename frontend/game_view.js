@@ -944,6 +944,15 @@ let tab_game = Vue.component("tab-game", {
 }`
             }
         },
+        current_player: function (){
+            this.$parent.user_cmd = `{
+    "type": "command",
+    "command": "change_player",
+    "args" : {
+        "new_player": "${this.current_player}"
+    }
+}`
+        },
         computed: {
             function() {
                 let child_game_state = {};
