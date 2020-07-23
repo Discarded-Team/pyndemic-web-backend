@@ -75,7 +75,8 @@ pre {
 }
 
 .card_img_static {
-    width: 140px;
+    width: 80%;
+    text-align: center;
 }
 
 .card_img {
@@ -241,6 +242,7 @@ ul {
     background: rgba(13, 14, 42, 0.97);
     border: none;
     color: var(--bright-color);
+    width: 100%;
 }
 
 
