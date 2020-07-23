@@ -3,7 +3,6 @@
     --color_t1: #008806;
     --color_t2: #0b74ff;
     --red-color: #009e1d;
-    /*--red-color:  #FF2300;*/
     --super-red-color: #76ff00;
     --red-color2: #7c1800;
     --blue-text-color: #0053ff;
@@ -81,6 +80,7 @@ pre {
 
 .card_img {
     width: 140px;
+    margin: 10px;
 }
 
 .card_img:hover {
@@ -93,15 +93,6 @@ pre {
     position: absolute;
     top: 5%;
 }
-
-/*#left_menu{*/
-/*    display: inline;*/
-/*    position: absolute;*/
-/*    !*top: 15%;*!*/
-/*    background: var(--dark-menu);*/
-/*    padding: 5px;*/
-/*}*/
-
 
 .bottom {
     background: var(--dark-menu);
@@ -134,14 +125,7 @@ ul {
 }
 
 #mapid {
-    /*width: 100%;*/
-
-    /*height: 450px;*/
-    /*height: 400px;*/
     height: 70vh;
-    /*position: fixed;*/
-    /*right: 5%;*/
-    /*left: 205px;*/
 }
 
 
@@ -168,46 +152,42 @@ ul {
 }
 
 .tab-button.active {
-    /*background: #e05300;*/
     background: rgb(255, 248, 248);
 }
 
 .tab {
-    /*border: 1px solid #ccc;*/
     padding: 10px;
 }
 
 #start_btn {
-    border-radius: 10px;
-    height: 40px;
-    width: 140px;
-    /*background: linear-gradient(180deg, #1aad00, #0c4c05);*/
-    border: none;
-    /*color: white;*/
-    /*cursor: pointer;*/
+    border-radius: 100px;
+    height: 90px;
+    width: 90px;
+    background: none;
+    color: white;
+    border: 1px solid rgba(0, 230, 255, 0.5);
+    box-shadow: 0 0 2px 2px rgba(0, 230, 255, 0.5)
+}
+
+#start_btn:hover{
+    border: 1px solid rgba(0, 230, 255, 0.5);
+    box-shadow: 0 0 3px 3px rgba(0, 230, 255, 0.5), inset 0 0 3px 3px rgba(0, 230, 255, 0.5);
 }
 
 #home_div {
     position: fixed;
-    /*height: 500px;*/
     color: white;
     width: 100%;
 }
 
 
 .left_side {
-    /*display: inline;*/
-    /*position: fixed;*/
     left: 20px;
     max-width: 30%;
-    background: var(--dark-menu);
-    /*padding: 15px;*/
-    /*width: 30%;*/
 }
 
 
 .left_side_small {
-    /*display: inline;*/
     position: absolute;
     left: 20px;
     background: var(--dark-menu);
@@ -216,12 +196,8 @@ ul {
 }
 
 #first_menu {
-    /*display: inline;*/
-    /*position: fixed;*/
     right: 20px;
     padding: 15px;
-    /*width: 100%;*/
-    /*z-index: -1;*/
 }
 
 .blue {
@@ -264,10 +240,6 @@ textarea {
 }
 
 #player_cards, #game_cards, #old_cards {
-    /*display: inline;*/
-    /*position: relative;*/
-    /*width: 200px;*/
-    /*height: 300px;*/
     color: white;
 }
 
