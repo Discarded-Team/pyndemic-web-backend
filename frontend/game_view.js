@@ -110,9 +110,6 @@ function getIconHouse(title, lat, lon) {
     })
         .on('click', onIconClick)
         .on('dragend', onIconDragEnd);
-    // .on('down', onDrag)
-    // .on('dragstart', onDrag)
-    // .on('dragend', onDrag);
 }
 
 function getIcon(title, color1, color2, color3, lat, lon) {
@@ -222,7 +219,6 @@ function plotMap() {
                 .addTo(mymap);
             e.target.remove(mymap);
 
-            // game_vue.cities_virus_levels[e.target.city_name] = circle.virus_level;
             cities_cicles[circle.city_ind] = circle;
             game_vue.cities_levels[circle.city_ind] = new_city_level;
             if (!is_epidemy_step) {
@@ -253,8 +249,6 @@ function plotMap() {
     }
 
     function onLineOver(e) {
-        // let coord = e.latlng.toString().replace('LatLng', '');
-        // let text = `${this.parent_name} <--> ${this.child_name} ${coord}`;
         e.target.setStyle({color: 'lime'});
         let lon_parent = lons[get_city_ind_by_name(this.parent_name)];
         let lon_child = lats[get_city_ind_by_name(this.child_name)];
@@ -262,10 +256,6 @@ function plotMap() {
         let parent_name = this.parent_name;
         let child_name = this.child_name;
 
-        // if  (lon_parent < lon_child){
-        //     parent_name = this.child_name;
-        //     child_name =  this.parent_name;
-        // }
         // yellow blue black red
         let color_dict_num = {yellow: 3, blue: 2, black: 1, red: 0};
         if (color_dict_num[get_city_color(parent_name)] < color_dict_num[get_city_color(child_name)]) {
@@ -283,9 +273,6 @@ function plotMap() {
         let color_parent = get_city_color(parent_name);
         let color_child = get_city_color(child_name);
 
-        // let text = `<span class="${color_parent}">${parent_name}</span>
-        //              <span class="green">⟷</span>
-        //              <span class="${color_child}">${child_name}</span>`;
         let text = `<span class="${color_parent}">${parent_name}</span>
                      <span class="green">✈</span>
                      <span class="${color_child}">${child_name}</span>`;
@@ -310,8 +297,6 @@ function plotMap() {
     for (let i = 0; i < 48; i++) {
         let lat = lats[i];
         let lon = lons[i];
-        // let r = population[i] * 20000;
-        // let r = 100000; // size in km
         let color = colors[i];
 
         let circle = L.circle([lat, lon], {
@@ -333,13 +318,6 @@ function plotMap() {
 
         let city_name_marker = getIconCity(names[i], color, lat, lon);
         city_name_marker.addTo(mymap);
-
-        // let text = `${circle.city_name} ${circle.virus_level}`;
-        // circle.bindTooltip(text, opacity=0.6).openTooltip();
-        // popup
-        //     .setLatLng([lat, lon])
-        //     .setContent(text)
-        //     .openOn(mymap);
     }
 
     let color1 = '#878787';
@@ -353,9 +331,6 @@ function plotMap() {
     let lat = 32.185531;
     let lon = -83.542718;
     let dx = 1;
-
-    // let laboratory = getIconHouse('laboratory', lat + 2 * dx, lon);
-    // laboratory.addTo(mymap);
 
     for (var i = 0; i < 48; i++) {
         let laboratory = getIconHouse('laboratory', lat + 2 * dx, lon);
@@ -1050,10 +1025,6 @@ let game_vue = new Vue({
         },
         game_state: function () {
             let game_state = game_state_init;
-            // let cities_levels = [];
-            // for (let i = 0; i < cities_cicles.length; i++) {
-            //     cities_levels.push(cities_cicles[i].virus_level);
-            // }
             game_state['cities_levels'] = this.cities_levels;
             // sync keys
             let keys = ['current_player',
@@ -1096,7 +1067,6 @@ function getFromServer(query, params_dict) {
     for (let k in params_dict) {
         params += k + '=' + encodeURIComponent(params_dict[k]) + '&';
     }
-    // let params = 'name=' + encodeURIComponent(name) + '&surname=' + encodeURIComponent(surname);
     xhttp.open("GET", query + '?' + params, false);
     xhttp.send();
     return xhttp.responseText;
