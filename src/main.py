@@ -1,14 +1,15 @@
-from src.game_managment import GamesDict
-from src.middleware import sessionMiddleware
+import logging
+
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from pyndemic import config
+
+from src.middleware import SessionMiddleware
 from src.routes import (
     moving_router,
     actions_router,
-    auth_router,
     prepare_game_router
 )
-from fastapi import FastAPI
-import logging
-from fastapi.staticfiles import StaticFiles
 
 logger = logging.getLogger(__name__)
 
@@ -18,8 +19,9 @@ app.mount("/static2", StaticFiles(directory="frontend2"), name="static")
 
 
 @app.on_event("startup")
-async def start_server():
-    app.state.games = GamesDict()
+def start_server():
+    config.refresh_settings()
+    app.state.games = dict()
     logger.info('Server have started')
 
 
@@ -27,8 +29,7 @@ async def start_server():
 async def shutdown_server():
     logger.info('Server have shutdown')
 
-app.add_middleware(sessionMiddleware)
+app.add_middleware(SessionMiddleware)
 app.include_router(moving_router, prefix='/moving', tags=['moving'])
 app.include_router(actions_router, prefix='/actions', tags=['actions'])
-app.include_router(auth_router, tags=['auth'])
 app.include_router(prepare_game_router, tags=['prepare_game'])
