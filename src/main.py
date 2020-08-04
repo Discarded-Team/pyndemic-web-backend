@@ -6,9 +6,8 @@ from pyndemic import config
 
 from src.middleware import SessionMiddleware
 from src.routes import (
-    moving_router,
-    actions_router,
-    prepare_game_router
+    api_router,
+    prepare_game_router,
 )
 
 logger = logging.getLogger(__name__)
@@ -30,6 +29,5 @@ async def shutdown_server():
     logger.info('Server have shutdown')
 
 app.add_middleware(SessionMiddleware)
-app.include_router(moving_router, prefix='/moving', tags=['moving'])
-app.include_router(actions_router, prefix='/actions', tags=['actions'])
+app.include_router(api_router, prefix='/api', tags=['api'])
 app.include_router(prepare_game_router, tags=['prepare_game'])
