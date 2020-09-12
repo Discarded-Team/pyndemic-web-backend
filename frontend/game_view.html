@@ -29,6 +29,7 @@
             integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
             crossorigin="anonymous"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.20.0/vuedraggable.umd.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Architects+Daughter" />
     <link rel="stylesheet" href="pyndemic_lists.css">
 </head>
 
@@ -36,7 +37,7 @@
 <div id="dynamic-component-demo">
     <div id="game_nav">
         <div id="pyndemic_logo">
-            <h2>&nbspPyndemic Online&nbsp</h2>
+            <h2 class="hand-written">&nbspPyndemic Online&nbsp</h2>
         </div>
         <button
                 v-for="tab in tabs"
@@ -48,9 +49,28 @@
         </button>
     </div>
 
-
     <keep-alive>
-        <component v-bind:is="currentTabComponent" class="tab" :logtext2="logtext"></component>
+        <TabGame   ref="tab_game"
+                   v-bind:is="currentTabComponent"
+                   class="tab"
+                   :logtext="logtext"
+                   :user_cmd="user_cmd"
+                   :game_state="game_state">
+        </TabGame>
+        <TabStats ref="tab_stats"
+                   v-bind:is="currentTabComponent"
+                   class="tab"
+                   :logtext="logtext"
+                   :user_cmd="user_cmd"
+                   :game_state="game_state">
+        </TabStats>
+        <TabHome ref="tab_home"
+                   v-bind:is="currentTabComponent"
+                   class="tab"
+                   :logtext="logtext"
+                   :user_cmd="user_cmd"
+                   :game_state="game_state">
+        </TabHome>
     </keep-alive>
 </div>
 

@@ -1,5 +1,7 @@
 let popup = L.popup();
 
+var init_line_color = '#007BFF';
+
 Math.radians = function (degrees) {
     return degrees * Math.PI / 180;
 };
@@ -9,6 +11,13 @@ Math.degrees = function (radians) {
 };
 
 var is_epidemy_step = false;
+
+
+function show_alert(title, text) {
+    $('#modal_msg').modal('show');
+    $('#modal_title').text(title);
+    $('#modal_body').text(text);
+}
 
 function distance(lat1, lon1, lat2, lon2) {
     let R = 6371000;
@@ -55,14 +64,27 @@ function onIconDragEnd(e) {
     let lon = e.target._latlng.lng;
     let city_name = get_closest(lat, lon);
 
-    // tab_game.$set('user_cmd', `{
-    //     "type": "command",
-    //     "command": "move",
-    //     "args" : {
-    //         "destination": "London"
-    //     }
-    // }`);
-    alert(`${city_name}`);
+    show_alert(city_name, '');
+
+    let icon_name = e.target.options.icon_name;
+    if (icon_name === "hero") {
+        game_vue.user_cmd = `{
+    "type": "command",
+    "command": "move",
+    "args" : {
+        "destination": "${city_name}"
+    }
+}`;
+        game_vue.game_state.players_positions[e.target.options.title] = city_name;
+    } else if (icon_name === 'building') {
+        game_vue.user_cmd = `{
+    {
+    "type": "command",
+    "command": "build"
+    "destination": "${city_name}"
+}`;
+        game_vue.game_state.buildings_positions[e.target.options.title] = city_name;
+    }
 }
 
 function getIconHouse(title, lat, lon) {
@@ -82,13 +104,12 @@ function getIconHouse(title, lat, lon) {
     return L.marker([lat, lon], {
         icon: meIcon,
         title: title,
-        draggable: true
+        draggable: true,
+        icon_name: "building",
+        player_name: 'building'
     })
         .on('click', onIconClick)
         .on('dragend', onIconDragEnd);
-    // .on('down', onDrag)
-    // .on('dragstart', onDrag)
-    // .on('dragend', onDrag);
 }
 
 function getIcon(title, color1, color2, color3, lat, lon) {
@@ -104,10 +125,31 @@ function getIcon(title, color1, color2, color3, lat, lon) {
     return L.marker([lat, lon], {
         icon: meIcon,
         title: title,
-        draggable: true
+        draggable: true,
+        icon_name: "hero",
     })
         .on('click', onIconClick)
         .on('dragend', onIconDragEnd);
+}
+
+function getIconCity(city_name, color, lat, lon) {
+    let svg = `
+    <svg  width="80" height="40"  xmlns="http://www.w3.org/2000/svg">
+      <text x="40" y="35" class="svg_city_name">${city_name}</text>
+    </svg>`;
+
+    let meIcon = L.divIcon({
+        className: "leaflet-data-marker",
+        html: svg,
+        iconAnchor: [80, 40],
+        iconSize: [80, 40],
+        popupAnchor: [0, -30],
+    });
+    return L.marker([lat, lon], {
+        icon: meIcon,
+        title: city_name,
+        draggable: false
+    });
 }
 
 var mymap = null;
@@ -135,7 +177,7 @@ function plotMap() {
     Stadia_AlidadeSmoothDark.addTo(mymap);
 
     function onCircleOver(e) {
-        let text = `${this.city_name} ${this.virus_level}`;
+        let text = `${this.virus_level}`;
         popup
             .setLatLng(e.latlng)
             .setContent(text)
@@ -151,7 +193,7 @@ function plotMap() {
 
     function onCircleClick(e) {
         var sign = is_epidemy_step ? 1 : -1;
-        if  (!is_epidemy_step && e.target.virus_level < 1 || is_epidemy_step && e.target.virus_level === 3){
+        if (!is_epidemy_step && e.target.virus_level < 1 || is_epidemy_step && e.target.virus_level === 3) {
             return
         }
         if (e.target.virus_level <= 3) {
@@ -177,39 +219,84 @@ function plotMap() {
                 .addTo(mymap);
             e.target.remove(mymap);
 
-            // game_vue.cities_virus_levels[e.target.city_name] = circle.virus_level;
             cities_cicles[circle.city_ind] = circle;
-
-            if (!is_epidemy_step){
+            game_vue.cities_levels[circle.city_ind] = new_city_level;
+            if (!is_epidemy_step) {
                 // send_cmd player
+                game_vue.user_cmd = `{
+    "type": "command",
+    "command": "treat",
+    "args" : {
+        "colour": "${circle.options.color}",
+        "destination": "${circle.city_name}"
+    }
+}`
             }
         }
     }
 
+    function get_city_ind_by_name(city_name) {
+        return names.indexOf(city_name);
+    }
 
-    function onLineClick(e) {
-        let coord = e.latlng.toString().replace('LatLng', '');
+    function get_city_color(city_name) {
+        let ind = get_city_ind_by_name(city_name);
+        return colors[ind];
+    }
+
+    function onLineOut(e){
+        e.target.setStyle({color: init_line_color});
+    }
+
+    function onLineOver(e) {
+        e.target.setStyle({color: 'lime'});
+        let lon_parent = lons[get_city_ind_by_name(this.parent_name)];
+        let lon_child = lats[get_city_ind_by_name(this.child_name)];
+
+        let parent_name = this.parent_name;
+        let child_name = this.child_name;
+
+        // yellow blue black red
+        let color_dict_num = {yellow: 3, blue: 2, black: 1, red: 0};
+        if (color_dict_num[get_city_color(parent_name)] < color_dict_num[get_city_color(child_name)]) {
+            parent_name = this.child_name;
+            child_name = this.parent_name;
+        }
+
+        if (color_dict_num[get_city_color(parent_name)] === color_dict_num[get_city_color(child_name)]) {
+            if (lon_parent < lon_child) {
+                parent_name = this.child_name;
+                child_name = this.parent_name;
+            }
+        }
+
+        let color_parent = get_city_color(parent_name);
+        let color_child = get_city_color(child_name);
+
+        let text = `<span class="${color_parent}">${parent_name}</span>
+                     <span class="green">✈</span>
+                     <span class="${color_child}">${child_name}</span>`;
         popup
             .setLatLng(e.latlng)
-            .setContent(`${this.parent_name} <--> ${this.child_name} ${coord}`)
+            .setContent(text)
             .openOn(mymap);
     }
 
 // draw connections
     for (let i = 0; i < polylines.length; i++) {
-        let line = L.polyline(polylines[i], {opacity: 0.3}).addTo(mymap);
+        let line = L.polyline(polylines[i], {color: init_line_color, opacity: 0.3}).addTo(mymap);
 
         line.parent_name = names[polylines_ind[i][0]];
         line.child_name = names[polylines_ind[i][1]];
-        line.on('click', onLineClick);
+        // line.on('click', onLineClick);
+        line.on('mouseover', onLineOver);
+        line.on('mouseout', onLineOut);
     }
 
 // draw cities
     for (let i = 0; i < 48; i++) {
         let lat = lats[i];
         let lon = lons[i];
-        // let r = population[i] * 20000;
-        // let r = 100000; // size in km
         let color = colors[i];
 
         let circle = L.circle([lat, lon], {
@@ -228,12 +315,9 @@ function plotMap() {
         circle.on('click', onCircleClick);
 
         cities_cicles.push(circle);
-        // let text = `${circle.city_name} ${circle.virus_level}`;
-        // circle.bindTooltip(text, opacity=0.6).openTooltip();
-        // popup
-        //     .setLatLng([lat, lon])
-        //     .setContent(text)
-        //     .openOn(mymap);
+
+        let city_name_marker = getIconCity(names[i], color, lat, lon);
+        city_name_marker.addTo(mymap);
     }
 
     let color1 = '#878787';
@@ -247,9 +331,6 @@ function plotMap() {
     let lat = 32.185531;
     let lon = -83.542718;
     let dx = 1;
-
-    // let laboratory = getIconHouse('laboratory', lat + 2 * dx, lon);
-    // laboratory.addTo(mymap);
 
     for (var i = 0; i < 48; i++) {
         let laboratory = getIconHouse('laboratory', lat + 2 * dx, lon);
@@ -300,17 +381,14 @@ Vue.component("tab-home", {
     </div>
     <div id="first_menu" class="col-md-8">
         <center>
-            <img class='card_img' src="img/Doctor.jpg"/>
-            &nbsp &nbsp
-            <img class='card_img' src="img/Researcher.jpg"/>
+            <img class='card_img' src="img/Doctor.svg"/>
+            <img class='card_img' src="img/Researcher.svg"/>
             <br>
-            &nbsp &nbsp
-            <img class='card_img' src="img/Scientist.jpg"/>
-            &nbsp &nbsp
-            <img class='card_img' src="img/Caranteener.jpg"/>
+            <img class='card_img' src="img/Scientist.svg"/>
+            <img class='card_img' src="img/Caranteener.svg"/>
             <br>
             <br>
-            <button id="start_btn" type="button" class="btn btn-success" onclick="start_game()">start</button>
+            <button id="start_btn" type="button" class="btn" onclick="start_game()">start</button>
         </center>
     </div>
  </div>
@@ -324,7 +402,8 @@ Vue.component("tab-home", {
             player4_name: 'Chuck',
             complexity: 2,
         }
-    }
+    },
+    props: ['logtext', 'user_cmd', 'game_state']
 });
 
 
@@ -337,6 +416,7 @@ var init_players_cards = {
 
 var init_players_cards_color = convert2color(init_players_cards);
 
+var cities_levels_init = Array(names.length).fill(0);
 
 function convert2color(data) {
     let data_color = {};
@@ -379,19 +459,31 @@ Vue.use(vuedraggable);
 let tab_game = Vue.component("tab-game", {
     template: `<div>
 <div class="game_params">
-        <div id="vaccines" class="game_params" align="left">
-                <img class='virus_img' src='img/virus_danger.png'/>
-                <input type="checkbox" id="vaccine_blue" value="false" v-model="vaccine_blue">
-                <label for="vaccine_blue"><span class="color_blue">blue</span></label>
-                &nbsp
-                <input type="checkbox" id="vaccine_yellow" value="false" v-model="vaccine_yellow">
-                <label for="vaccine_yellow"><span class="color_yellow">yellow</span></label>
-                &nbsp
-                <input type="checkbox" id="vaccine_black" value="false" v-model="vaccine_black">
-                <label for="vaccine_black"><span class="color_black">black</span></label>
-                &nbsp
-                <input type="checkbox" id="vaccine_red" value="false" v-model="vaccine_red">
-                <label for="vaccine_red"><span class="color_red">red</span></label>
+        <div id="vaccines" class="game_params">
+           <div class="row text-center"><h5>&nbsp&nbsp&nbspvaccines 🧪</h5></div>
+           <div class="row">
+<!--                <img class='virus_img' src='img/virus_danger.png'/>-->
+                <div class="vaccine_ans color_blue col">
+                        <input type="checkbox" id="vaccine_blue" value="false" v-model="vaccine_blue">
+<!--                    <label for="vaccine_blue">🧬</label>-->
+                </div>
+                
+                <div class="vaccine_ans color_yellow col">
+                        <input type="checkbox" id="vaccine_yellow" value="false" v-model="vaccine_yellow">
+<!--                        <label for="vaccine_yellow">🧫</label>-->
+                </div>
+                
+                <div class="vaccine_ans color_black col">
+                        <input type="checkbox" id="vaccine_black" value="false" v-model="vaccine_black">
+<!--                        <label for="vaccine_black">🦠</label>-->
+                </div>
+                
+                 <div class="vaccine_ans color_red col">  
+                        <input type="checkbox" id="vaccine_red" value="false" v-model="vaccine_red">
+<!--                        <label for="vaccine_red">🧪</label>-->
+                </div> 
+                <!--     ☣⚠ 🧬🧫🦠🧪💊       -->
+           </div>
         </div>
         <div id="virus_level">
             virus level
@@ -455,7 +547,7 @@ let tab_game = Vue.component("tab-game", {
 <div class="row h-75">
     <div id="left_menu" class="left_side_small bg_dark_color col-md-2">
         <h3>Players</h3>
-         <img class='card_img_static' v-bind:src="'img/' + current_player +'.jpg'"/>
+         <img class='card_img_static' v-bind:src="'img/' + current_player +'.svg'"/>
          <br>
         <select v-model="current_player" size="4" class="left_select">
             <option><span class="player_span">Doctor</span></option>
@@ -575,9 +667,9 @@ let tab_game = Vue.component("tab-game", {
                
             <div class="col-sm">
                   <div class="col-3 player_field">
-                      <h4>Old cards {{ old_cards.length }}
-                      <button class="shuffle_btn btn btn-success" type="button" v-on:click="sort_old_cards">sort</button> 
-                      <button class="shuffle_btn btn btn-success" type="button" v-on:click="shuffle_old_cards">shuffle</button> 
+                      <h4>Cards to move <span class="red">{{ old_cards.length }}</span>
+<!--                      <button class="shuffle_btn btn btn-success" type="button" v-on:click="sort_old_cards">sort</button> -->
+<!--                      <button class="shuffle_btn btn btn-success" type="button" v-on:click="shuffle_old_cards">shuffle</button> -->
                       </h4>
                       <draggable class="list-group" :list="old_cards"  group="people" @change="log">
                         <div
@@ -588,14 +680,23 @@ let tab_game = Vue.component("tab-game", {
                           {{ element.name }}
                         </div>
                       </draggable>
-                    </div>
+                  </div>
+                  <div id="game_actions">
+                      <button class="game_action_btn btn btn-outline-primary" v-on:click="direct_fly">direct&nbsp✈&nbspfly</button>
+                      <button class="game_action_btn btn btn-outline-primary" v-on:click="charter_fly">charter&nbsp✈&nbspfly</button>
+                      <button class="game_action_btn btn btn-outline-primary" v-on:click="shuttle_fly">shuttle&nbsp✈&nbspfly</button>
+                      <button class="game_action_btn btn btn-outline-info" v-on:click="share_card">share 🤝 card</button>
+                      <button class="game_action_btn btn btn-outline-info" v-on:click="play_custom_card">custom card</button>
+                      <button class="game_action_btn btn btn-outline-success" v-on:click="make_vaccine">make&nbsp&nbsp🔬&nbsp&nbspvaccine</button>
+                      <button class="game_action_btn btn btn-outline-danger" v-on:click="pass_move">pass</button>
+                  </div>
             </div>      
             <div class="col-sm">
                          <div class="col-3 player_field drive_panel">
                                 <h4>Send command</h4>
                                 <textarea v-model="user_cmd" id="text_area">
                                 </textarea><br>
-                                <button class="shuffle_btn btn btn-success" v-on:click="send_move">move</button>
+                                <button class="shuffle_btn btn btn-success" v-on:click="send_move">send</button>
                                 <button class="shuffle_btn btn btn-danger" v-on:click="cancel_move">cancel</button>
                          </div>
             </div>
@@ -604,11 +705,36 @@ let tab_game = Vue.component("tab-game", {
                 
         </div>
 </div>
+
+<!--    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_msg">-->
+<!--      Launch demo modal-->
+<!--    </button>-->
+
+    <div class="modal fade" id="modal_msg" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal_title">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div id="modal_body" class="modal-body">
+            ...
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+<!--            <button type="button" class="btn btn-primary">Save changes</button>-->
+          </div>
+        </div>
+      </div>
+</div>
 </div>
     `,
     mounted() {
         plotMap();
     },
+    props: ['logtext', 'user_cmd', 'game_state'],
     data: function () {
         return {
             current_player: 'Doctor',
@@ -627,25 +753,69 @@ let tab_game = Vue.component("tab-game", {
             vaccine_yellow: false,
             vaccine_blue: false,
             vaccine_black: false,
-            user_cmd: `{
-    "type": "command",
-    "command": "move",
-    "args" : {
-        "destination": "London"
-    }
-}`,
             virus_level: 1,
             epidemic_flashes: 0,
-            // current_player: 'Scientist',
             cities_virus_levels: init_cities_virus_levels,
         }
     },
     methods: {
+        replace_cmd: function (user_cmd_text, cmd) {
+            let user_cmd_dict = JSON.parse(user_cmd_text);
+            user_cmd_dict['command'] = cmd;
+            this.$parent.user_cmd = JSON.stringify(user_cmd_dict, null, 2);
+        },
+        player_move: function () {
+            // this.replace_cmd(this.$parent.user_cmd, "move");
+
+        },
+        direct_fly: function () {
+            this.replace_cmd(this.$parent.user_cmd, "fly");
+        },
+        charter_fly: function () {
+            this.replace_cmd(this.$parent.user_cmd, "charter");
+        },
+        shuttle_fly: function () {
+            this.replace_cmd(this.$parent.user_cmd, "shuttle");
+        },
+        make_vaccine: function () {
+            this.$parent.user_cmd = `{
+    "type": "command",
+    "command": "cure",
+    "args" : {
+        "cards": ${JSON.stringify(this.old_cards.map(value => value.name))}
+    }
+}`;
+        },
+        share_card: function () {
+            this.$parent.user_cmd = `{
+    "type": "command",
+    "command": "share",
+    "args" : {
+        "card": "${this.old_cards[0].name}",
+        "player": "${this.current_player}"
+    }
+  }
+`;
+        },
+        pass_move: function () {
+            this.$parent.user_cmd = `{
+    "type": "command",
+    "command": "pass"
+}
+`
+        },
+        play_custom_card: function(){
+             this.$parent.user_cmd = `{
+    "type": "command",
+    "command": "custom",
+    "card": "${this.old_cards[0].name}"
+}
+`
+        },
         send_move: function () {
-            alert(this.user_cmd);
+            show_alert(title = "Send cmd", text = this.user_cmd);
 
             // add cards to current player
-
             let additional_cards = this.game_cards
                 .map(x => ({x, r: Math.random()}))
                 .sort((a, b) => a.r - b.r)
@@ -672,13 +842,18 @@ let tab_game = Vue.component("tab-game", {
                     break;
             }
 
-            let res = getFromServer('http://127.0.0.1:8000/actions/api/v1', JSON.parse(this.user_cmd));
-            alert(`response: ${res}`);
+            try {
+                let res = getFromServer('http://127.0.0.1:8000/api/v1', JSON.parse(this.user_cmd));
+                show_alert("Response", res);
+            } catch (e) {
+                console.log(e);
+            }
             this.old_cards = [];
+            this.$parent.logtext += '\n' + this.user_cmd + '\n';
             this.infectCities();
         },
         cancel_move: function () {
-            alert('cancel move');
+            show_alert('Info', 'Cancel move');
         },
         add: function () {
             alert('add');
@@ -737,27 +912,19 @@ let tab_game = Vue.component("tab-game", {
 
             for (let i = 0; i < selected_inds.length; i++) {
                 let ind = selected_inds[i];
-                let latlngPoint = cities_cicles[ind].getLatLng();
                 let logmsg = `infect ${names[ind]}`;
                 console.log(logmsg);
                 cities_cicles[ind].fire('click');
-                // this.logtext2 += logmsg + '\n';
+                this.$parent.logtext += logmsg + '\n';
             }
             is_epidemy_step = false;
         },
-        get_state: function () {
-            return JSON.parse();
-        },
-        // change_user_cmd: function(x){
-        //     this.user_cmd = x;
-        // }
     },
-    props: ['logtext2'],
     watch: {
         old_cards: function () {
             if (this.old_cards.length > 0) {
                 let last_city = this.old_cards[0];
-                this.user_cmd = `{
+                this.$parent.user_cmd = `{
     "type": "command",
     "command": "fly",
     "args" : {
@@ -766,51 +933,118 @@ let tab_game = Vue.component("tab-game", {
 }`
             }
         },
+        current_player: function (){
+            this.$parent.user_cmd = `{
+    "type": "command",
+    "command": "change_player",
+    "args" : {
+        "new_player": "${this.current_player}"
+    }
+}`
+        },
+        computed: {
+            function() {
+                let child_game_state = {};
+                let keys = ['current_player',
+                    'cards_doctor',
+                    'cards_scientist',
+                    'cards_researcher',
+                    'cards_caranteene',
+                    'game_cards',
+                    'old_cards',
+                    'vaccine_red',
+                    'vaccine_yellow',
+                    'vaccine_blue',
+                    'vaccine_black',
+                    'virus_level',
+                    'epidemic_flashes'];
+                for (let i = 0; i < keys.length; i++) {
+                    let k = keys[i];
+                    child_game_state[k] = this[k];
+                }
+                return child_game_state;
+            }
+        },
         deep: true
     }
 });
 
 Vue.component("tab-stats", {
         template: `
-<div>
-    <textarea v-model="logtext2">
-    </textarea>    
+<div class="container">
+<div class="row">
+    <div class="col"><h3>History</h3></div>
+    <div class="col"><h3>Game state</h3></div>
+</div>
+    <div class="row">
+        <div class="col">
+            <textarea>{{ logtext }}</textarea>
+        </div>
+        <div class="col">
+            <textarea>{{ JSON.stringify(game_state, null, 2) }}</textarea>
+        </div>
+    </div>
 </div>`,
-        props: ["logtext2"]
+        props: ["logtext", 'user_cmd', "game_state"],
     },
 );
 
+
+let game_state_init = {
+    complexity: 2,
+    doctor: 'Alice',
+    researcher: 'Bob',
+    scientist: 'Charlie',
+    caranteener: 'Chuck',
+    players_positions: {
+        Doctor: 'Atlanta',
+        Researcher: 'Atlanta',
+        Scientist: 'Atlanta',
+        Caranteener: 'Atlanta'
+    },
+    buildings_positions: ['Atlanta']
+};
 let game_vue = new Vue({
     el: "#dynamic-component-demo",
     data: {
         currentTab: "Game",
         tabs: ["Home", "Game", "Stats"],
-        logtext: `
-Game log: 
-infect Los Angeles 
-infect Lagos 
-infect Shanghai 
-infect Milan 
-infect Bangkok 
-infect Tehran 
-infect Bogota 
-infect Seoul 
-infect Istanbul 
-infect Miami 
-infect Johannesburg 
-infect Osaka 
-infect London 
-infect Jakarta 
-infect Madrid 
-infect St. Petersburg 
-infect Karachi 
-infect Tokyo 
-infect Sydney 
-infect Ho Chi Minh City`,
+        logtext: " ",
+        user_cmd: `{
+    "type": "command",
+    "command": "move",
+    "args" : {
+        "destination": "London"
+    }
+}`,
+    cities_levels: cities_levels_init
     },
     computed: {
         currentTabComponent: function () {
             return "tab-" + this.currentTab.toLowerCase();
+        },
+        game_state: function () {
+            let game_state = game_state_init;
+            game_state['cities_levels'] = this.cities_levels;
+            // sync keys
+            let keys = ['current_player',
+                'cards_doctor',
+                'cards_scientist',
+                'cards_researcher',
+                'cards_caranteene',
+                'game_cards',
+                'old_cards',
+                'vaccine_red',
+                'vaccine_yellow',
+                'vaccine_blue',
+                'vaccine_black',
+                'virus_level',
+                'epidemic_flashes'];
+            for (let i = 0; i < keys.length; i++) {
+                let k = keys[i];
+                // game_state[k] = this.$refs.tab_game.child_game_state[k];
+            }
+            return game_state;
         }
     },
     methods: {
@@ -833,7 +1067,6 @@ function getFromServer(query, params_dict) {
     for (let k in params_dict) {
         params += k + '=' + encodeURIComponent(params_dict[k]) + '&';
     }
-    // let params = 'name=' + encodeURIComponent(name) + '&surname=' + encodeURIComponent(surname);
     xhttp.open("GET", query + '?' + params, false);
     xhttp.send();
     return xhttp.responseText;
